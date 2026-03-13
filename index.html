@@ -1996,6 +1996,265 @@ footer {
 </footer>
 
 <!-- ══════════════════════════════════
+     FIREBASE DATA INTEGRATION
+══════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ─── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// ──────────────────────────────────────────────────────────────────────────────
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatPrice(price) {
+  if (!price && price !== 0) return '';
+  const n = parseFloat(price);
+  return isNaN(n) ? String(price) : '$' + n.toFixed(2);
+}
+
+// ── MENU ──────────────────────────────────────────────────────────────────────
+async function loadMenu() {
+  try {
+    const snap = await getDocs(collection(db, 'menu'));
+    const items = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(i => i.available !== false)
+      .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+
+    if (!items.length) return; // keep static HTML if no data
+
+    // Map of category slug → items
+    const catMap = {};
+    items.forEach(item => {
+      const cat = (item.category || 'other').toLowerCase().trim();
+      if (!catMap[cat]) catMap[cat] = [];
+      catMap[cat].push(item);
+    });
+
+    // Tab IDs on the page
+    const tabIds = ['breakfast','apps','subs','burgers','chicken','salads','drinks'];
+
+    tabIds.forEach(tabId => {
+      const panel = document.getElementById('tab-' + tabId);
+      if (!panel) return;
+
+      // Find matching items — try exact match first, then partial
+      const catItems = catMap[tabId] || catMap[Object.keys(catMap).find(k => k.includes(tabId))] || [];
+      if (!catItems.length) return; // keep static HTML for this tab
+
+      // Preserve any static note rows (grid-column:1/-1 info bars)
+      const noteRows = Array.from(panel.querySelectorAll('.menu-entry[style*="grid-column"]'))
+        .map(el => el.outerHTML);
+
+      // Build new item HTML
+      const itemsHTML = catItems.map(item => {
+        const featuredTag = item.featured
+          ? `<span class="menu-entry-tag">⭐ Fan Favorite</span>`
+          : '';
+        const priceDisplay = formatPrice(item.price);
+        return `<div class="menu-entry">
+          <div class="menu-entry-dot"></div>
+          <div class="menu-entry-body">
+            <div class="menu-entry-top">
+              <span class="menu-entry-name">${esc(item.name)}</span>
+              <span class="menu-entry-price">${esc(priceDisplay)}</span>
+            </div>
+            ${item.description ? `<p class="menu-entry-desc">${esc(item.description)}</p>` : ''}
+            ${featuredTag}
+          </div>
+        </div>`;
+      }).join('');
+
+      // Rebuild panel: first note row + items + remaining note rows
+      panel.innerHTML = (noteRows[0] || '') + itemsHTML + (noteRows.slice(1).join('') || '');
+    });
+
+  } catch(e) {
+    console.warn('Menu load failed, using static content.', e.message);
+  }
+}
+
+// ── SPECIALS ─────────────────────────────────────────────────────────────────
+async function loadSpecials() {
+  try {
+    const snap = await getDocs(collection(db, 'specials'));
+    const specials = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(s => s.active !== false);
+
+    if (!specials.length) return; // keep static banner
+
+    const banner = document.querySelector('.specials-banner');
+    if (!banner) return;
+
+    // Build a specials list inside the banner
+    const specialsHTML = specials.map(s => `
+      <div style="padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-start;gap:0.8rem;">
+        <span style="color:var(--gold);font-size:1rem;margin-top:2px;">★</span>
+        <div>
+          <strong style="color:#fff;font-family:var(--font-display);font-size:1rem;font-style:italic;">${esc(s.title)}</strong>
+          ${s.description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem;">${esc(s.description)}</p>` : ''}
+          ${s.tag ? `<span style="font-size:0.68rem;color:var(--gold-lt);letter-spacing:0.08em;text-transform:uppercase;">${esc(s.tag)}</span>` : ''}
+          ${s.validUntil ? `<span style="font-size:0.68rem;color:rgba(255,255,255,0.35);margin-left:0.6rem;">${esc(s.validUntil)}</span>` : ''}
+        </div>
+      </div>`).join('');
+
+    banner.innerHTML = `
+      <div style="flex:1">
+        <h3>This Week's Specials</h3>
+        <div style="margin-top:0.8rem">${specialsHTML}</div>
+      </div>
+      <a href="https://www.facebook.com/thecbc3434/" target="_blank" class="btn-primary" style="white-space:nowrap;align-self:flex-start">See More on Facebook</a>
+    `;
+  } catch(e) {
+    console.warn('Specials load failed, using static content.', e.message);
+  }
+}
+
+// ── HOURS ─────────────────────────────────────────────────────────────────────
+async function loadHours() {
+  try {
+    const snap = await getDoc(doc(db, 'info', 'hours'));
+    if (!snap.exists()) return;
+    const data = snap.data();
+
+    const hoursTable = document.querySelector('.hours-table');
+    if (!hoursTable) return;
+
+    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+    hoursTable.innerHTML = days.map(day => {
+      const d = data[day];
+      if (!d) return '';
+      const isClosed = d.closed === true;
+      const timeStr = isClosed
+        ? 'Closed'
+        : `${formatTime(d.open)} – ${formatTime(d.close)}`;
+      return `<tr class="${isClosed ? 'closed' : 'open'}">
+        <td>${day}</td>
+        <td>${timeStr}</td>
+      </tr>`;
+    }).join('');
+
+    // Also update the Open/Closed badge logic dynamically
+    updateOpenBadge(data);
+
+  } catch(e) {
+    console.warn('Hours load failed, using static content.', e.message);
+  }
+}
+
+function formatTime(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function updateOpenBadge(hoursData) {
+  const badge = document.getElementById('open-badge');
+  if (!badge) return;
+  const now = new Date();
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayName = dayNames[now.getDay()];
+  const d = hoursData[todayName];
+  if (!d || d.closed) {
+    badge.className = 'is-closed';
+    badge.innerHTML = '<span class="badge-dot"></span>Closed';
+    return;
+  }
+  const [oh, om] = (d.open || '08:00').split(':').map(Number);
+  const [ch, cm] = (d.close || '20:00').split(':').map(Number);
+  const currentMins = now.getHours() * 60 + now.getMinutes();
+  const openMins = oh * 60 + om;
+  const closeMins = ch * 60 + cm;
+  if (currentMins >= openMins && currentMins < closeMins) {
+    badge.className = 'is-open';
+    badge.innerHTML = '<span class="badge-dot"></span>Open Now';
+  } else {
+    badge.className = 'is-closed';
+    badge.innerHTML = '<span class="badge-dot"></span>Closed';
+  }
+}
+
+// ── CONTACT ───────────────────────────────────────────────────────────────────
+async function loadContact() {
+  try {
+    const snap = await getDoc(doc(db, 'info', 'contact'));
+    if (!snap.exists()) return;
+    const d = snap.data();
+
+    // Phone links
+    if (d.phone) {
+      const rawPhone = d.phone.replace(/\D/g, '');
+      document.querySelectorAll('a[href^="tel:"]').forEach(a => {
+        a.href = 'tel:' + rawPhone;
+        // Only update text if it looks like a phone number
+        if (a.textContent.match(/\d{3}.*\d{4}/)) a.textContent = d.phone;
+      });
+    }
+
+    // Address in the visit section
+    if (d.address || d.city) {
+      document.querySelectorAll('.visit-details p').forEach(p => {
+        if (p.innerHTML.includes('State Route') || p.innerHTML.includes('Route 29')) {
+          p.innerHTML = `${esc(d.address || '')}<br>${esc(d.city || '')}${d.stateZip ? ', ' + esc(d.stateZip) : ''}`;
+        }
+      });
+    }
+
+    // Social links
+    if (d.facebook) {
+      document.querySelectorAll('a[href*="facebook.com"]').forEach(a => { a.href = d.facebook; });
+    }
+    if (d.instagram) {
+      document.querySelectorAll('a[href*="instagram.com"]').forEach(a => { a.href = d.instagram; });
+    }
+
+    // Footer address
+    if (d.address) {
+      document.querySelectorAll('.footer-col a[href="#"]').forEach(a => {
+        if (a.textContent.includes('State Rt') || a.textContent.includes('Salisbury')) {
+          if (a.textContent.includes('29') || a.textContent.includes('Route')) a.textContent = d.address;
+          else a.textContent = `${d.city || ''}${d.stateZip ? ', ' + d.stateZip : ''}`;
+        }
+      });
+    }
+
+  } catch(e) {
+    console.warn('Contact load failed, using static content.', e.message);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+Promise.allSettled([
+  loadMenu(),
+  loadSpecials(),
+  loadHours(),
+  loadContact()
+]).then(() => {
+  // Re-run scroll reveal observer after dynamic content
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+});
+</script>
+
+<!-- ══════════════════════════════════
      JS: Nav scroll + Reveal
 ══════════════════════════════════ -->
 <script>
@@ -2074,16 +2333,16 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 });
 
 // Scroll reveal
-const observer = new IntersectionObserver((entries) => {
+window.observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       e.target.classList.add('visible');
-      observer.unobserve(e.target);
+      window.observer.unobserve(e.target);
     }
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.reveal').forEach(el => window.observer.observe(el));
 </script>
 </body>
 </html>

@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Restaurant Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getStorage, ref, uploadBytes, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // ─── PASTE YOUR FIREBASE CONFIG HERE ───────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    // ───────────────────────────────────────────────────────────────────────────
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    window.__db = db;
+    window.__storage = storage;
+    window.__fbOps = { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, ref, uploadBytes, getDownloadURL, deleteObject };
+
+    window.dispatchEvent(new Event("firebase-ready"));
+  </script>
+
+  <style>
+    :root {
+      --cream: #fdf6ec;
+      --warm-white: #fffdf9;
+      --rust: #c0441a;
+      --rust-light: #e8562a;
+      --rust-dark: #8f3212;
+      --forest: #2d5a3d;
+      --forest-light: #3d7a53;
+      --sand: #e8d5b0;
+      --sand-dark: #c9b48a;
+      --charcoal: #2a2520;
+      --mid: #5a504a;
+      --muted: #9a8f87;
+      --border: #e0d4c3;
+      --success: #3a7d44;
+      --danger: #c0392b;
+      --warning: #e67e22;
+      --radius: 10px;
+      --shadow: 0 2px 16px rgba(42,37,32,0.09);
+      --shadow-lg: 0 8px 40px rgba(42,37,32,0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: var(--charcoal);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-logo h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--sand);
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+
+    .sidebar-logo span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 18px 12px 8px;
+    }
+
+    .nav-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 12px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #c4b8ae;
+      font-size: 0.88rem;
+      font-weight: 400;
+      transition: all 0.18s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+
+    .nav-item.active {
+      background: var(--rust);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .firebase-status {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #888;
+      transition: background 0.3s;
+    }
+    .status-dot.connected { background: #4caf50; box-shadow: 0 0 6px #4caf5088; }
+    .status-dot.error { background: var(--danger); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: var(--warm-white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--charcoal);
+    }
+
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--rust);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--rust-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(192,68,26,0.3); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--mid);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--rust); color: var(--rust); }
+
+    .btn-danger {
+      background: #fdecea;
+      color: var(--danger);
+      border: 1.5px solid #f5c6c2;
+    }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    .btn-sm { padding: 5px 12px; font-size: 0.78rem; border-radius: 6px; }
+
+    .btn-forest { background: var(--forest); color: #fff; }
+    .btn-forest:hover { background: var(--forest-light); }
+
+    /* ── CONTENT AREA ── */
+    .content {
+      padding: 32px 36px;
+      flex: 1;
+    }
+
+    .panel { display: none; animation: fadeIn 0.25s ease; }
+    .panel.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--warm-white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--charcoal);
+    }
+
+    .card-body { padding: 22px; }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--mid);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"], input[type="number"], input[type="email"],
+    input[type="tel"], input[type="url"], textarea, select {
+      width: 100%;
+      padding: 9px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--charcoal);
+      background: var(--cream);
+      transition: border-color 0.18s, box-shadow 0.18s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--rust);
+      box-shadow: 0 0 0 3px rgba(192,68,26,0.1);
+      background: #fff;
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── TABLES ── */
+    .data-table { width: 100%; border-collapse: collapse; }
+
+    .data-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      background: var(--cream);
+    }
+
+    .data-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.87rem;
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fdf2e9; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-green { background: #e8f5e9; color: #2e7d32; }
+    .badge-orange { background: #fff3e0; color: #e65100; }
+    .badge-red { background: #fdecea; color: #c62828; }
+    .badge-blue { background: #e3f2fd; color: #1565c0; }
+
+    /* ── TOAST ── */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--charcoal);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.25s ease;
+      max-width: 320px;
+    }
+    .toast.success { border-left: 4px solid #4caf50; }
+    .toast.error { border-left: 4px solid var(--danger); }
+    .toast.info { border-left: 4px solid #2196f3; }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(42,37,32,0.55);
+      backdrop-filter: blur(3px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--warm-white);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalIn 0.22s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .modal-close:hover { color: var(--charcoal); }
+    .modal-body { padding: 24px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* ── GALLERY GRID ── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: var(--sand);
+      cursor: pointer;
+      group: hover;
+    }
+
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s;
+    }
+
+    .gallery-item:hover img { transform: scale(1.04); }
+
+    .gallery-item .delete-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(192,68,26,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.18s;
+      color: #fff;
+      font-size: 1.4rem;
+    }
+
+    .gallery-item:hover .delete-overlay { opacity: 1; }
+
+    .gallery-upload-btn {
+      border: 2px dashed var(--sand-dark);
+      border-radius: 8px;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.8rem;
+      gap: 6px;
+      transition: all 0.18s;
+      background: var(--cream);
+    }
+    .gallery-upload-btn:hover { border-color: var(--rust); color: var(--rust); background: #fdf2e9; }
+
+    /* ── HOURS TABLE ── */
+    .hours-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr 80px;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .day-label { font-weight: 500; font-size: 0.88rem; }
+
+    /* ── SPECIALS ── */
+    .special-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: var(--cream);
+      position: relative;
+      transition: box-shadow 0.18s;
+    }
+    .special-card:hover { box-shadow: var(--shadow); }
+
+    .specials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    /* ── CATEGORY TABS ── */
+    .cat-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .cat-tab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      color: var(--mid);
+      background: var(--warm-white);
+      transition: all 0.18s;
+    }
+    .cat-tab.active, .cat-tab:hover {
+      background: var(--rust);
+      color: #fff;
+      border-color: var(--rust);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border: 3px solid var(--border);
+      border-top-color: var(--rust);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SETUP BANNER ── */
+    .setup-banner {
+      background: linear-gradient(135deg, #fff8f0, #fdebd0);
+      border: 1.5px solid var(--sand-dark);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .setup-banner .icon { font-size: 1.5rem; }
+    .setup-banner h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--charcoal); }
+    .setup-banner p { font-size: 0.82rem; color: var(--mid); line-height: 1.5; }
+    .setup-banner code { background: rgba(0,0,0,0.08); padding: 1px 6px; border-radius: 4px; font-size: 0.8rem; }
+
+    /* ── CONFIG PANEL ── */
+    .config-input-wrap { position: relative; }
+    .config-input-wrap input { padding-right: 40px; font-family: monospace; font-size: 0.82rem; }
+    .copy-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1rem; }
+    .copy-btn:hover { color: var(--rust); }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 20px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .section-divider::before, .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── PRICE INPUT ── */
+    .price-input-wrap { position: relative; }
+    .price-input-wrap::before { content: '$'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; z-index: 1; }
+    .price-input-wrap input { padding-left: 22px; }
+
+    /* Toggle switch */
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+    .toggle {
+      position: relative;
+      width: 38px; height: 21px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 15px; height: 15px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--forest); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(17px); }
+    .toggle-label { font-size: 0.85rem; color: var(--mid); }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>🍽️ Restaurant<br>Admin</h1>
+    <span>Management Panel</span>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Content</div>
+    <div class="nav-item active" onclick="showPanel('menu')">
+      <span class="icon">📋</span> Menu Items
+    </div>
+    <div class="nav-item" onclick="showPanel('specials')">
+      <span class="icon">⭐</span> Specials
+    </div>
+    <div class="nav-item" onclick="showPanel('gallery')">
+      <span class="icon">🖼️</span> Gallery
+    </div>
+  </nav>
+
+  <nav class="nav-section">
+    <div class="nav-label">Info</div>
+    <div class="nav-item" onclick="showPanel('hours')">
+      <span class="icon">🕐</span> Hours
+    </div>
+    <div class="nav-item" onclick="showPanel('contact')">
+      <span class="icon">📍</span> Contact & Location
+    </div>
+  </nav>
+
+  <nav class="nav-section">
+    <div class="nav-label">Settings</div>
+    <div class="nav-item" onclick="showPanel('config')">
+      <span class="icon">⚙️</span> Firebase Config
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="firebase-status">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Not connected</span>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="panel-title">Menu Items</div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="reloadCurrentPanel()">↻ Refresh</button>
+      <button class="btn btn-primary btn-sm" id="topbar-add-btn" onclick="openAddModal()">+ Add Item</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="setup-banner" class="setup-banner" style="display:none">
+      <div class="icon">🔧</div>
+      <div>
+        <h3>Firebase not configured yet</h3>
+        <p>Go to <strong>Firebase Config</strong> in the sidebar and enter your project credentials to connect. Your data will sync automatically with your restaurant website.</p>
+      </div>
+    </div>
+
+    <!-- MENU PANEL -->
+    <div class="panel active" id="panel-menu">
+      <div class="cat-tabs" id="menu-cat-tabs">
+        <div class="cat-tab active" data-cat="all" onclick="filterMenuByCategory('all', this)">All</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Menu Items</span>
+          <span id="menu-count" style="font-size:0.8rem;color:var(--muted)"></span>
+        </div>
+        <div id="menu-table-wrap">
+          <div class="loading"><div class="spinner"></div><br>Loading menu…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIALS PANEL -->
+    <div class="panel" id="panel-specials">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">Current Specials & Promotions</span></div>
+        <div class="card-body">
+          <div class="specials-grid" id="specials-grid">
+            <div class="loading"><div class="spinner"></div><br>Loading specials…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY PANEL -->
+    <div class="panel" id="panel-gallery">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Photo Gallery</span>
+          <span style="font-size:0.8rem;color:var(--muted)">Photos are stored in Firebase Storage</span>
+        </div>
+        <div class="card-body">
+          <div class="gallery-grid" id="gallery-grid">
+            <div class="loading"><div class="spinner"></div><br>Loading gallery…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOURS PANEL -->
+    <div class="panel" id="panel-hours">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Business Hours</span>
+          <button class="btn btn-primary btn-sm" onclick="saveHours()">💾 Save Hours</button>
+        </div>
+        <div class="card-body" id="hours-body">
+          <div class="loading"><div class="spinner"></div><br>Loading hours…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT PANEL -->
+    <div class="panel" id="panel-contact">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Contact & Location Info</span>
+          <button class="btn btn-primary btn-sm" onclick="saveContact()">💾 Save Contact</button>
+        </div>
+        <div class="card-body" id="contact-body">
+          <div class="loading"><div class="spinner"></div><br>Loading contact info…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG PANEL -->
+    <div class="panel" id="panel-config">
+      <div class="card">
+        <div class="card-header"><span class="card-title">⚙️ Firebase Configuration</span></div>
+        <div class="card-body">
+          <p style="font-size:0.87rem;color:var(--mid);margin-bottom:20px;line-height:1.6">
+            Enter your Firebase project credentials below. You can find these in your Firebase console under <strong>Project Settings → Your Apps → Firebase SDK snippet</strong>.
+          </p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>API Key</label>
+              <div class="config-input-wrap"><input type="text" id="cfg-apiKey" placeholder="AIzaSy…"/></div>
+            </div>
+            <div class="form-group">
+              <label>Auth Domain</label>
+              <input type="text" id="cfg-authDomain" placeholder="your-project.firebaseapp.com"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Project ID</label>
+              <input type="text" id="cfg-projectId" placeholder="your-project-id"/>
+            </div>
+            <div class="form-group">
+              <label>Storage Bucket</label>
+              <input type="text" id="cfg-storageBucket" placeholder="your-project.appspot.com"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Messaging Sender ID</label>
+              <input type="text" id="cfg-messagingSenderId" placeholder="123456789"/>
+            </div>
+            <div class="form-group">
+              <label>App ID</label>
+              <input type="text" id="cfg-appId" placeholder="1:123:web:abc…"/>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <button class="btn btn-primary" onclick="saveFirebaseConfig()">Save & Reinitialize Firebase</button>
+          </div>
+
+          <div class="section-divider">How to get your config</div>
+
+          <div style="background:var(--cream);border-radius:8px;padding:16px;font-size:0.82rem;color:var(--mid);line-height:1.8">
+            <ol style="padding-left:18px">
+              <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--rust)">console.firebase.google.com</a></li>
+              <li>Create or select a project</li>
+              <li>Add a <strong>Web App</strong> to the project</li>
+              <li>Copy the <code>firebaseConfig</code> object values above</li>
+              <li>In Firestore, create collections: <code>menu</code>, <code>specials</code>, <code>gallery</code>, <code>hours</code>, <code>contact</code></li>
+              <li>Set Firestore Rules to allow read/write (or set up auth)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODALS ── -->
+
+<!-- Menu Item Modal -->
+<div class="modal-overlay" id="modal-menu">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="menu-modal-title">Add Menu Item</span>
+      <button class="modal-close" onclick="closeModal('modal-menu')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="menu-edit-id"/>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Item Name *</label>
+          <input type="text" id="menu-name" placeholder="e.g. Classic Burger"/>
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <input type="text" id="menu-category" placeholder="e.g. Burgers, Drinks, Sides…" list="category-suggestions"/>
+          <datalist id="category-suggestions"></datalist>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="menu-desc" placeholder="Brief description of the item…"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price</label>
+          <div class="price-input-wrap">
+            <input type="number" id="menu-price" placeholder="9.99" step="0.01" min="0"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Image URL (optional)</label>
+          <input type="url" id="menu-img" placeholder="https://…"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="toggle-wrap" style="margin-top:24px">
+            <label class="toggle">
+              <input type="checkbox" id="menu-available" checked/>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Available</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="toggle-wrap" style="margin-top:24px">
+            <label class="toggle">
+              <input type="checkbox" id="menu-featured"/>
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Featured item</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-menu')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMenuItem()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- Special Modal -->
+<div class="modal-overlay" id="modal-special">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="special-modal-title">Add Special</span>
+      <button class="modal-close" onclick="closeModal('modal-special')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="special-edit-id"/>
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" id="special-title" placeholder="e.g. Tuesday Taco Night"/>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="special-desc" placeholder="What's included, any conditions, etc."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Discount / Tag</label>
+          <input type="text" id="special-tag" placeholder="e.g. 20% off, BOGO, $5 Kids Meal"/>
+        </div>
+        <div class="form-group">
+          <label>Valid Until</label>
+          <input type="text" id="special-until" placeholder="e.g. Every Tuesday, Dec 31"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Badge Color</label>
+        <select id="special-badge">
+          <option value="badge-orange">🟠 Orange (default)</option>
+          <option value="badge-green">🟢 Green</option>
+          <option value="badge-red">🔴 Red</option>
+          <option value="badge-blue">🔵 Blue</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="special-active" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Active / Visible on site</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-special')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSpecial()">Save Special</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <span class="modal-title">Confirm Delete</span>
+      <button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.9rem;color:var(--mid)" id="confirm-msg">Are you sure you want to delete this item?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-confirm')">Cancel</button>
+      <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Hidden file input -->
+<input type="file" id="gallery-file-input" accept="image/*" style="display:none" onchange="uploadGalleryImage(event)"/>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+let currentPanel = 'menu';
+let currentMenuCat = 'all';
+let menuItems = [];
+let categories = new Set();
+let isFirebaseReady = false;
+
+// ── PANEL NAVIGATION ─────────────────────────────────────────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.toLowerCase().includes(name === 'menu' ? 'menu' : name === 'specials' ? 'special' : name === 'gallery' ? 'gallery' : name === 'hours' ? 'hours' : name === 'contact' ? 'contact' : name === 'config' ? 'config' : '')) {
+      n.classList.add('active');
+    }
+  });
+
+  const titles = { menu: 'Menu Items', specials: 'Specials & Promotions', gallery: 'Photo Gallery', hours: 'Business Hours', contact: 'Contact & Location', config: 'Firebase Configuration' };
+  document.getElementById('panel-title').textContent = titles[name] || name;
+
+  const addBtns = { menu: 'add-btn', specials: 'add-btn' };
+  const addLabels = { menu: '+ Add Item', specials: '+ Add Special', gallery: '⬆ Upload Photo', hours: '', contact: '', config: '' };
+  const topBtn = document.getElementById('topbar-add-btn');
+  topBtn.textContent = addLabels[name] || '';
+  topBtn.style.display = addLabels[name] ? '' : 'none';
+
+  currentPanel = name;
+
+  if (isFirebaseReady) {
+    if (name === 'menu') loadMenu();
+    if (name === 'specials') loadSpecials();
+    if (name === 'gallery') loadGallery();
+    if (name === 'hours') loadHours();
+    if (name === 'contact') loadContact();
+  }
+}
+
+function openAddModal() {
+  if (currentPanel === 'menu') openMenuModal();
+  else if (currentPanel === 'specials') openSpecialModal();
+  else if (currentPanel === 'gallery') document.getElementById('gallery-file-input').click();
+}
+
+function reloadCurrentPanel() {
+  showPanel(currentPanel);
+}
+
+// ── FIREBASE INIT ─────────────────────────────────────────────────────────────
+window.addEventListener('firebase-ready', () => {
+  isFirebaseReady = true;
+  document.getElementById('status-dot').classList.add('connected');
+  document.getElementById('status-text').textContent = 'Connected';
+  document.getElementById('setup-banner').style.display = 'none';
+  loadMenu();
+  toast('Firebase connected ✓', 'success');
+});
+
+function saveFirebaseConfig() {
+  const cfg = {
+    apiKey: v('cfg-apiKey'),
+    authDomain: v('cfg-authDomain'),
+    projectId: v('cfg-projectId'),
+    storageBucket: v('cfg-storageBucket'),
+    messagingSenderId: v('cfg-messagingSenderId'),
+    appId: v('cfg-appId'),
+  };
+  if (!cfg.apiKey || !cfg.projectId) return toast('API Key and Project ID are required', 'error');
+  localStorage.setItem('fb_config', JSON.stringify(cfg));
+  toast('Config saved. Please reload the page and update the firebaseConfig object in the HTML source with these values.', 'info');
+}
+
+// ── MENU ─────────────────────────────────────────────────────────────────────
+async function loadMenu() {
+  const wrap = document.getElementById('menu-table-wrap');
+  wrap.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading menu…</div>';
+  try {
+    const { collection, getDocs } = window.__fbOps;
+    const snap = await getDocs(collection(window.__db, 'menu'));
+    menuItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    categories = new Set(menuItems.map(i => i.category).filter(Boolean));
+    renderCategoryTabs();
+    renderMenuTable(currentMenuCat);
+  } catch (e) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+function renderCategoryTabs() {
+  const tabs = document.getElementById('menu-cat-tabs');
+  tabs.innerHTML = `<div class="cat-tab ${currentMenuCat === 'all' ? 'active' : ''}" data-cat="all" onclick="filterMenuByCategory('all',this)">All</div>`;
+  categories.forEach(cat => {
+    tabs.innerHTML += `<div class="cat-tab ${currentMenuCat === cat ? 'active' : ''}" data-cat="${cat}" onclick="filterMenuByCategory('${cat}',this)">${cat}</div>`;
+  });
+  const datalist = document.getElementById('category-suggestions');
+  if (datalist) datalist.innerHTML = [...categories].map(c => `<option value="${c}">`).join('');
+}
+
+function filterMenuByCategory(cat, el) {
+  currentMenuCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderMenuTable(cat);
+}
+
+function renderMenuTable(cat) {
+  const wrap = document.getElementById('menu-table-wrap');
+  const items = cat === 'all' ? menuItems : menuItems.filter(i => i.category === cat);
+  document.getElementById('menu-count').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+
+  if (!items.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🍽️</div><p>No menu items yet. Click "+ Add Item" to get started.</p></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `<table class="data-table">
+    <thead><tr>
+      <th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Featured</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      ${items.map(item => `
+        <tr>
+          <td>
+            ${item.imageUrl ? `<img src="${item.imageUrl}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle" onerror="this.style.display='none'">` : ''}
+            <strong>${esc(item.name)}</strong>
+            ${item.description ? `<br><span style="font-size:0.78rem;color:var(--muted)">${esc(item.description.slice(0,60))}${item.description.length>60?'…':''}</span>` : ''}
+          </td>
+          <td>${item.category ? `<span class="badge badge-blue">${esc(item.category)}</span>` : '—'}</td>
+          <td><strong>$${parseFloat(item.price||0).toFixed(2)}</strong></td>
+          <td>${item.available !== false ? '<span class="badge badge-green">Available</span>' : '<span class="badge badge-red">Unavailable</span>'}</td>
+          <td>${item.featured ? '⭐' : '—'}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="openMenuModal('${item.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" style="margin-left:4px" onclick="confirmDelete('menu','${item.id}','${esc(item.name)}')">Delete</button>
+          </td>
+        </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function openMenuModal(id) {
+  document.getElementById('menu-modal-title').textContent = id ? 'Edit Menu Item' : 'Add Menu Item';
+  const fields = ['menu-edit-id','menu-name','menu-category','menu-desc','menu-price','menu-img'];
+  fields.forEach(f => { const el = document.getElementById(f); if (el) el.value = ''; });
+  document.getElementById('menu-available').checked = true;
+  document.getElementById('menu-featured').checked = false;
+
+  if (id) {
+    const item = menuItems.find(i => i.id === id);
+    if (item) {
+      document.getElementById('menu-edit-id').value = id;
+      document.getElementById('menu-name').value = item.name || '';
+      document.getElementById('menu-category').value = item.category || '';
+      document.getElementById('menu-desc').value = item.description || '';
+      document.getElementById('menu-price').value = item.price || '';
+      document.getElementById('menu-img').value = item.imageUrl || '';
+      document.getElementById('menu-available').checked = item.available !== false;
+      document.getElementById('menu-featured').checked = !!item.featured;
+    }
+  }
+  openModal('modal-menu');
+}
+
+async function saveMenuItem() {
+  const id = v('menu-edit-id');
+  const data = {
+    name: v('menu-name'),
+    category: v('menu-category'),
+    description: v('menu-desc'),
+    price: parseFloat(v('menu-price')) || 0,
+    imageUrl: v('menu-img'),
+    available: document.getElementById('menu-available').checked,
+    featured: document.getElementById('menu-featured').checked,
+    updatedAt: new Date().toISOString()
+  };
+  if (!data.name) return toast('Item name is required', 'error');
+  try {
+    const { collection, doc, addDoc, updateDoc } = window.__fbOps;
+    if (id) await updateDoc(doc(window.__db, 'menu', id), data);
+    else { data.createdAt = new Date().toISOString(); await addDoc(collection(window.__db, 'menu'), data); }
+    closeModal('modal-menu');
+    toast(id ? 'Menu item updated ✓' : 'Menu item added ✓', 'success');
+    loadMenu();
+  } catch (e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── SPECIALS ──────────────────────────────────────────────────────────────────
+async function loadSpecials() {
+  const grid = document.getElementById('specials-grid');
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading specials…</div>';
+  try {
+    const { collection, getDocs } = window.__fbOps;
+    const snap = await getDocs(collection(window.__db, 'specials'));
+    const specials = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!specials.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><p>No specials yet.</p></div>`;
+      return;
+    }
+    grid.innerHTML = specials.map(s => `
+      <div class="special-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <span class="badge ${s.badge||'badge-orange'}">${esc(s.tag||'Special')}</span>
+          ${s.active === false ? '<span class="badge badge-red" style="font-size:0.68rem">Hidden</span>' : '<span class="badge badge-green" style="font-size:0.68rem">Live</span>'}
+        </div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:6px">${esc(s.title)}</h3>
+        <p style="font-size:0.82rem;color:var(--mid);margin-bottom:8px;line-height:1.5">${esc(s.description||'')}</p>
+        ${s.validUntil ? `<p style="font-size:0.75rem;color:var(--muted)">Valid: ${esc(s.validUntil)}</p>` : ''}
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <button class="btn btn-secondary btn-sm" onclick="openSpecialModal('${s.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete('specials','${s.id}','${esc(s.title)}')">Delete</button>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+let specialsCache = [];
+async function openSpecialModal(id) {
+  document.getElementById('special-modal-title').textContent = id ? 'Edit Special' : 'Add Special';
+  ['special-edit-id','special-title','special-desc','special-tag','special-until'].forEach(f => { document.getElementById(f).value = ''; });
+  document.getElementById('special-active').checked = true;
+  document.getElementById('special-badge').value = 'badge-orange';
+
+  if (id) {
+    try {
+      const { collection, getDocs } = window.__fbOps;
+      if (!specialsCache.length) { const snap = await getDocs(collection(window.__db,'specials')); specialsCache = snap.docs.map(d=>({id:d.id,...d.data()})); }
+      const s = specialsCache.find(x=>x.id===id);
+      if (s) {
+        document.getElementById('special-edit-id').value = id;
+        document.getElementById('special-title').value = s.title||'';
+        document.getElementById('special-desc').value = s.description||'';
+        document.getElementById('special-tag').value = s.tag||'';
+        document.getElementById('special-until').value = s.validUntil||'';
+        document.getElementById('special-active').checked = s.active !== false;
+        document.getElementById('special-badge').value = s.badge||'badge-orange';
+      }
+    } catch(e) {}
+  }
+  openModal('modal-special');
+}
+
+async function saveSpecial() {
+  const id = v('special-edit-id');
+  const data = {
+    title: v('special-title'),
+    description: v('special-desc'),
+    tag: v('special-tag'),
+    validUntil: v('special-until'),
+    badge: document.getElementById('special-badge').value,
+    active: document.getElementById('special-active').checked,
+    updatedAt: new Date().toISOString()
+  };
+  if (!data.title) return toast('Title is required', 'error');
+  try {
+    const { collection, doc, addDoc, updateDoc } = window.__fbOps;
+    if (id) await updateDoc(doc(window.__db,'specials',id), data);
+    else { data.createdAt = new Date().toISOString(); await addDoc(collection(window.__db,'specials'), data); }
+    specialsCache = [];
+    closeModal('modal-special');
+    toast(id ? 'Special updated ✓' : 'Special added ✓', 'success');
+    loadSpecials();
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ── GALLERY ───────────────────────────────────────────────────────────────────
+async function loadGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading gallery…</div>';
+  try {
+    const { collection, getDocs } = window.__fbOps;
+    const snap = await getDocs(collection(window.__db, 'gallery'));
+    const photos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    grid.innerHTML = `
+      <div class="gallery-upload-btn" onclick="document.getElementById('gallery-file-input').click()">
+        <span style="font-size:1.8rem">+</span>
+        <span>Upload Photo</span>
+      </div>
+      ${photos.map(p => `
+        <div class="gallery-item">
+          <img src="${esc(p.url)}" alt="${esc(p.name||'')}" loading="lazy"/>
+          <div class="delete-overlay" onclick="deleteGalleryPhoto('${p.id}','${esc(p.storagePath||'')}')">🗑️</div>
+        </div>`).join('')}`;
+
+    if (!photos.length) grid.innerHTML += `<div style="grid-column:1/-1" class="empty-state"><p>No photos yet. Upload your first image.</p></div>`;
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+async function uploadGalleryImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  toast('Uploading image…', 'info');
+  try {
+    const { ref, uploadBytes, getDownloadURL, collection, addDoc } = window.__fbOps;
+    const path = `gallery/${Date.now()}_${file.name}`;
+    const storageRef = ref(window.__storage, path);
+    const snap = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snap.ref);
+    await addDoc(collection(window.__db, 'gallery'), { url, name: file.name, storagePath: path, createdAt: new Date().toISOString() });
+    toast('Photo uploaded ✓', 'success');
+    loadGallery();
+  } catch(e) { toast('Upload failed: '+e.message, 'error'); }
+  event.target.value = '';
+}
+
+async function deleteGalleryPhoto(docId, storagePath) {
+  if (!confirm('Delete this photo?')) return;
+  try {
+    const { doc, deleteDoc, ref, deleteObject } = window.__fbOps;
+    await deleteDoc(doc(window.__db, 'gallery', docId));
+    if (storagePath) { try { await deleteObject(ref(window.__storage, storagePath)); } catch(e) {} }
+    toast('Photo deleted', 'success');
+    loadGallery();
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ── HOURS ─────────────────────────────────────────────────────────────────────
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let hoursData = {};
+
+async function loadHours() {
+  const body = document.getElementById('hours-body');
+  body.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading…</div>';
+  try {
+    const { doc, getDoc } = window.__fbOps;
+    const snap = await getDoc(doc(window.__db, 'info', 'hours'));
+    hoursData = snap.exists() ? snap.data() : {};
+  } catch(e) { hoursData = {}; }
+
+  body.innerHTML = DAYS.map(day => {
+    const d = hoursData[day] || { open: '11:00', close: '21:00', closed: false };
+    return `<div class="hours-row">
+      <span class="day-label">${day}</span>
+      <input type="time" id="hours-open-${day}" value="${d.open||'11:00'}" ${d.closed?'disabled':''} style="max-width:140px"/>
+      <input type="time" id="hours-close-${day}" value="${d.close||'21:00'}" ${d.closed?'disabled':''} style="max-width:140px"/>
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="hours-closed-${day}" ${d.closed?'checked':''} onchange="toggleDayClosed('${day}')"/>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" style="font-size:0.78rem">Closed</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDayClosed(day) {
+  const closed = document.getElementById(`hours-closed-${day}`).checked;
+  document.getElementById(`hours-open-${day}`).disabled = closed;
+  document.getElementById(`hours-close-${day}`).disabled = closed;
+}
+
+async function saveHours() {
+  const data = {};
+  DAYS.forEach(day => {
+    data[day] = {
+      open: document.getElementById(`hours-open-${day}`).value,
+      close: document.getElementById(`hours-close-${day}`).value,
+      closed: document.getElementById(`hours-closed-${day}`).checked
+    };
+  });
+  try {
+    const { doc, setDoc } = window.__fbOps;
+    await setDoc(doc(window.__db, 'info', 'hours'), data);
+    toast('Hours saved ✓', 'success');
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ── CONTACT ───────────────────────────────────────────────────────────────────
+async function loadContact() {
+  const body = document.getElementById('contact-body');
+  body.innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading…</div>';
+  let d = {};
+  try {
+    const { doc, getDoc } = window.__fbOps;
+    const snap = await getDoc(doc(window.__db,'info','contact'));
+    if (snap.exists()) d = snap.data();
+  } catch(e) {}
+
+  body.innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label>Restaurant Name</label><input type="text" id="ct-name" value="${esc(d.restaurantName||'')}" placeholder="The Family Table"/></div>
+      <div class="form-group"><label>Tagline</label><input type="text" id="ct-tagline" value="${esc(d.tagline||'')}" placeholder="Home-style cooking since 1985"/></div>
+    </div>
+    <div class="form-group"><label>Street Address</label><input type="text" id="ct-address" value="${esc(d.address||'')}" placeholder="123 Main Street"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>City</label><input type="text" id="ct-city" value="${esc(d.city||'')}" placeholder="Springfield"/></div>
+      <div class="form-group"><label>State & ZIP</label><input type="text" id="ct-state" value="${esc(d.stateZip||'')}" placeholder="AZ 85001"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Phone</label><input type="tel" id="ct-phone" value="${esc(d.phone||'')}" placeholder="(555) 555-5555"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="ct-email" value="${esc(d.email||'')}" placeholder="hello@restaurant.com"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Google Maps Embed URL</label><input type="url" id="ct-maps" value="${esc(d.mapsEmbedUrl||'')}" placeholder="https://maps.google.com/…"/></div>
+      <div class="form-group"><label>Website</label><input type="url" id="ct-website" value="${esc(d.website||'')}" placeholder="https://…"/></div>
+    </div>
+    <div class="section-divider">Social Media</div>
+    <div class="form-row-3">
+      <div class="form-group"><label>Facebook</label><input type="url" id="ct-fb" value="${esc(d.facebook||'')}" placeholder="https://facebook.com/…"/></div>
+      <div class="form-group"><label>Instagram</label><input type="url" id="ct-ig" value="${esc(d.instagram||'')}" placeholder="https://instagram.com/…"/></div>
+      <div class="form-group"><label>X / Twitter</label><input type="url" id="ct-tw" value="${esc(d.twitter||'')}" placeholder="https://x.com/…"/></div>
+    </div>
+    <div class="section-divider">Additional Notes</div>
+    <div class="form-group"><label>About / Description</label><textarea id="ct-about" placeholder="Brief about us text for the website…">${esc(d.about||'')}</textarea></div>
+    <div class="form-group"><label>Parking / Access Notes</label><input type="text" id="ct-parking" value="${esc(d.parking||'')}" placeholder="Free parking available behind the building…"/></div>
+  `;
+}
+
+async function saveContact() {
+  const data = {
+    restaurantName: v('ct-name'), tagline: v('ct-tagline'), address: v('ct-address'),
+    city: v('ct-city'), stateZip: v('ct-state'), phone: v('ct-phone'), email: v('ct-email'),
+    mapsEmbedUrl: v('ct-maps'), website: v('ct-website'), facebook: v('ct-fb'),
+    instagram: v('ct-ig'), twitter: v('ct-tw'), about: v('ct-about'), parking: v('ct-parking'),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    const { doc, setDoc } = window.__fbOps;
+    await setDoc(doc(window.__db, 'info', 'contact'), data);
+    toast('Contact info saved ✓', 'success');
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ── DELETE CONFIRM ────────────────────────────────────────────────────────────
+function confirmDelete(col, id, name) {
+  document.getElementById('confirm-msg').textContent = `Delete "${name}"? This cannot be undone.`;
+  const btn = document.getElementById('confirm-delete-btn');
+  btn.onclick = async () => {
+    try {
+      const { doc, deleteDoc } = window.__fbOps;
+      await deleteDoc(doc(window.__db, col, id));
+      closeModal('modal-confirm');
+      toast('Deleted ✓', 'success');
+      if (col === 'menu') loadMenu();
+      if (col === 'specials') { specialsCache = []; loadSpecials(); }
+    } catch(e) { toast('Error: '+e.message,'error'); }
+  };
+  openModal('modal-confirm');
+}
+
+// ── MODAL HELPERS ─────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = { success: '✓', error: '✗', info: 'ℹ' };
+  t.innerHTML = `<span>${icons[type]||'·'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; t.style.transition = '0.3s'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  // Check if firebase is already ready (in case event fired before listener)
+  if (window.__db) {
+    isFirebaseReady = true;
+    document.getElementById('status-dot').classList.add('connected');
+    document.getElementById('status-text').textContent = 'Connected';
+    loadMenu();
+  } else {
+    document.getElementById('setup-banner').style.display = 'flex';
+    document.getElementById('status-dot').classList.add('error');
+    document.getElementById('status-text').textContent = 'Config needed';
+    ['menu-table-wrap'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<div class="empty-state"><div class="empty-icon">🔌</div><p>Set up Firebase config to load data.</p></div>`;
+    });
+  }
+});
+</script>
+</body>
+</html>

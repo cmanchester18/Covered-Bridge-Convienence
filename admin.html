@@ -18,13 +18,13 @@
 
     // ─── PASTE YOUR FIREBASE CONFIG HERE ───────────────────────────────────────
     const firebaseConfig = {
-      apiKey: "AIzaSyCa2uov3HgAbWoDtD6nqO47seplKHdk9_E",
-      authDomain: "cbc-website-46c7b.firebaseapp.com",
-      projectId: "cbc-website-46c7b",
-      storageBucket: "cbc-website-46c7b.firebasestorage.app",
-      messagingSenderId: "821005365368",
-      appId: "1:821005365368:web:6b8dbaa7886d4afc2d3d8d"
-  };
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
     // ───────────────────────────────────────────────────────────────────────────
 
     const app = initializeApp(firebaseConfig);
@@ -838,8 +838,16 @@
         </div>
         <div class="form-group">
           <label>Category *</label>
-          <input type="text" id="menu-category" placeholder="e.g. Burgers, Drinks, Sides…" list="category-suggestions"/>
-          <datalist id="category-suggestions"></datalist>
+          <select id="menu-category">
+            <option value="">— Select a category —</option>
+            <option value="breakfast">🍳 Breakfast</option>
+            <option value="apps">🍟 Appetizers &amp; Sides</option>
+            <option value="subs">🥖 Subs</option>
+            <option value="burgers">🍔 Burgers</option>
+            <option value="chicken">🍗 Chicken</option>
+            <option value="salads">🥗 Salads &amp; Wraps</option>
+            <option value="drinks">☕ Drinks</option>
+          </select>
         </div>
       </div>
       <div class="form-group">
@@ -1057,8 +1065,7 @@ function renderCategoryTabs() {
   categories.forEach(cat => {
     tabs.innerHTML += `<div class="cat-tab ${currentMenuCat === cat ? 'active' : ''}" data-cat="${cat}" onclick="filterMenuByCategory('${cat}',this)">${cat}</div>`;
   });
-  const datalist = document.getElementById('category-suggestions');
-  if (datalist) datalist.innerHTML = [...categories].map(c => `<option value="${c}">`).join('');
+  // category dropdown is pre-populated — no datalist needed
 }
 
 function filterMenuByCategory(cat, el) {

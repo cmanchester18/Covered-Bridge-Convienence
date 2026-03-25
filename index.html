@@ -114,7 +114,20 @@ body::before {
 #nav.scrolled {
   background: rgba(12, 22, 36, 0.96);
   border-bottom-color: rgba(184, 146, 74, 0.3);
+}
+/* backdrop-filter must live on a pseudo-element, NOT on #nav itself.
+   When backdrop-filter is applied directly to a positioned element, it creates
+   a new containing block for any position:fixed descendants — so the mobile
+   nav overlay repositions relative to the 72px nav bar instead of the viewport,
+   causing links to pile up at the top and become unclickable when scrolled. */
+#nav.scrolled::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .nav-wordmark {

@@ -58,6 +58,7 @@
   --navy:       #152238;
   --navy-mid:   #1e3254;
   --navy-light: #2a4470;
+  --navy-deep:  #0a1220;
   --gold:       #b8924a;
   --gold-lt:    #d4ac6a;
   --gold-pale:  #e8d5aa;
@@ -1036,7 +1037,7 @@ body::before {
    FOOTER
 ════════════════════════════════════════ */
 footer {
-  background: var(--navy-deep, #0a1220);
+  background: var(--navy-deep);
   border-top: 1px solid rgba(184,146,74,0.2);
   padding: 4rem 2rem 2rem;
 }
@@ -1243,13 +1244,19 @@ footer {
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* ════════════════════════════════════════
+   MOBILE NAV OVERLAY
+   FIX: background was var(--navy-deep) with no fallback — undefined
+   variable rendered transparent, causing the "frozen/see-through" overlay.
+   Now uses the hardcoded hex directly. Text color is also explicitly white.
+════════════════════════════════════════ */
 @media (max-width: 768px) {
   .hamburger { display: flex; }
   .nav-links {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--navy-deep);
+    background: #0a1220;               /* FIX: was var(--navy-deep) — undefined, rendered transparent */
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -1269,6 +1276,7 @@ footer {
   .nav-links a {
     font-size: 1.5rem !important;
     letter-spacing: 0.1em;
+    color: #ffffff !important;         /* FIX: explicit white so text is always visible */
   }
   .nav-links a::after { display: none; }
   #open-badge { display: none; }
@@ -1779,7 +1787,6 @@ footer {
 </section>
 
 <!-- ══════════════════════════════════
-     FAVORITES<!-- ══════════════════════════════════
      FAVORITES
 ══════════════════════════════════ -->
 <section id="favorites" class="section" style="padding:4.5rem 2rem;">
@@ -2285,7 +2292,6 @@ window.addEventListener('scroll', () => {
     badge.innerHTML = '<span class="badge-dot"></span>Open Now';
   } else {
     badge.className = 'is-closed';
-    const nextOpen = (!isOpenDay || hour >= 20) ? 'Opens Wed 8AM' : 'Opens 8AM';
     badge.innerHTML = '<span class="badge-dot"></span>Closed';
   }
 })();

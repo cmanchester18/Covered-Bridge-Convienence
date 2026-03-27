@@ -1677,124 +1677,14 @@ footer {
       </p>
     </div>
 
-    <!-- Tab Navigation -->
+    <!-- Tab Navigation — built dynamically from Firebase categories -->
     <div class="menu-tabs reveal" id="menuTabs">
-      <button class="menu-tab active" data-tab="breakfast"><span class="tab-icon">🍳</span>Breakfast</button>
-      <button class="menu-tab" data-tab="apps"><span class="tab-icon">🍟</span>Appetizers &amp; Sides</button>
-      <button class="menu-tab" data-tab="subs"><span class="tab-icon">🥖</span>Subs</button>
-      <button class="menu-tab" data-tab="burgers"><span class="tab-icon">🍔</span>Burgers</button>
-      <button class="menu-tab" data-tab="chicken"><span class="tab-icon">🍗</span>Chicken</button>
-      <button class="menu-tab" data-tab="salads"><span class="tab-icon">🥗</span>Salads &amp; Wraps</button>
-      <button class="menu-tab" data-tab="drinks"><span class="tab-icon">☕</span>Drinks</button>
+      <!-- Populated by loadMenu() -->
     </div>
 
-    <!-- ── BREAKFAST ── -->
-    <div class="menu-panel active" id="tab-breakfast">
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">🕐 Served until 11AM &nbsp;|&nbsp; Eggs served with Toasted White, Wheat, Rye, or Italian bread</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Eggs</span><span class="menu-entry-price">$4.50</span></div><p class="menu-entry-desc">Two eggs cooked your way.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Eggs with Meat</span><span class="menu-entry-price">$6.75</span></div><p class="menu-entry-desc">Two eggs with choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Eggs</span><span class="menu-entry-price">$5.50</span></div><p class="menu-entry-desc">Three eggs cooked your way.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Eggs with Meat</span><span class="menu-entry-price">$7.75</span></div><p class="menu-entry-desc">Three eggs with choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Egg Omelette</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Choice of Ham, Onions, Peppers, Tomato, Broccoli, Sausage, Bacon, or Mushroom. Choice of American, Swiss, or Provolone cheese. Add-ins $.60 each.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Breakfast Sandwich</span><span class="menu-entry-price">$4.75</span><span class="menu-entry-tag">⭐ Fan Favorite</span></div><p class="menu-entry-desc">Meat, Egg &amp; Cheese on a Hard Roll, English Muffin, Bagel, or Toast. Choice of Bacon, Ham, or Sausage. Extra Meat +$1.50 · Extra Egg +$1.50</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Slice French Toast</span><span class="menu-entry-price">$4.50</span></div><p class="menu-entry-desc">Golden French toast dusted with powdered sugar, served with syrup.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Slice French Toast w/ Meat</span><span class="menu-entry-price">$6.75</span></div><p class="menu-entry-desc">With choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Slices French Toast</span><span class="menu-entry-price">$5.75</span></div><p class="menu-entry-desc"></p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Slices French Toast w/ Meat</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">With choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Slices French Toast</span><span class="menu-entry-price">$7.00</span></div><p class="menu-entry-desc"></p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Slices French Toast w/ Meat</span><span class="menu-entry-price">$9.25</span></div><p class="menu-entry-desc">With choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Pancake</span><span class="menu-entry-price">$6.00</span></div><p class="menu-entry-desc">Fluffy buttermilk pancake served with butter &amp; maple syrup. Add Chocolate Chips +$1.50</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Pancake w/ Meat</span><span class="menu-entry-price">$8.25</span></div><p class="menu-entry-desc">With choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Pancakes</span><span class="menu-entry-price">$8.25</span></div><p class="menu-entry-desc">Two fluffy buttermilk pancakes. Add Chocolate Chips +$1.50</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Pancakes w/ Meat</span><span class="menu-entry-price">$10.50</span></div><p class="menu-entry-desc">With choice of Sausage Patties, Bacon, or Ham.</p></div></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Sides &amp; Extras: Home Fries $3.25 · Home Fries w/ Onions &amp; Peppers $4.50 · Bacon, Sausage, or Ham $3.75 · Hash $3.75 · Toast $1.00 · Bagel/Hard Roll/English Muffin $2.00 · Cream Cheese $1.00</p></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Breakfast Drinks: Coffee or Hot Tea $2.25 · Milk $2.50 · Orange Juice $2.75 · Hot Chocolate $3.00 · Chocolate Milk $2.75 · Fountain Soda $2.50 · Iced Tea $2.50 · Mimosas $7.00 &nbsp;|&nbsp; Free Refills on Fountain Soda, Coffee &amp; Iced Tea</p></div>
-    </div>
-
-    <!-- ── APPS & SIDES ── -->
-    <div class="menu-panel" id="tab-apps">
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Tenders (3)</span><span class="menu-entry-price">$6.00</span></div><p class="menu-entry-desc">Hand-breaded chicken tenders, golden fried. Served with dipping sauce.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mozzarella Sticks (5)</span><span class="menu-entry-price">$6.00</span></div><p class="menu-entry-desc">Golden fried mozzarella sticks served with marinara sauce.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Pizza Logs (5)</span><span class="menu-entry-price">$8.50</span></div><p class="menu-entry-desc">Crispy pizza logs stuffed with cheese and sauce.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Breaded Mushrooms</span><span class="menu-entry-price">$6.00</span></div><p class="menu-entry-desc">Breaded and fried mushrooms, served with your choice of dipping sauce.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Boneless Wings (10)</span><span class="menu-entry-price">$9.25</span><span class="menu-entry-tag">⭐ Fan Favorite</span></div><p class="menu-entry-desc">Crispy boneless wings tossed in your choice of sauce.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Onion Petals</span><span class="menu-entry-price">$5.00</span></div><p class="menu-entry-desc">Crispy battered onion petals, perfect for sharing.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Breaded Cauliflower</span><span class="menu-entry-price">$6.00</span></div><p class="menu-entry-desc">Lightly breaded cauliflower florets, fried golden.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">French Fries</span><span class="menu-entry-price">Sm $3.25 · Reg $4.00 · Lg $6.00</span></div><p class="menu-entry-desc">Crispy golden fries, lightly seasoned.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Curly or Sweet Potato Fries</span><span class="menu-entry-price">Sm $3.75 · Reg $4.50 · Lg $7.00</span></div><p class="menu-entry-desc">Your choice of curly or sweet potato fries.</p></div></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Dipping Sauces: BBQ, Ranch, Honey Mustard, Buffalo (Mild, Medium, Hot), Blue Cheese, Sour Cream, Tiger Sauce, Marinara &nbsp;|&nbsp; Extra Sauce $.50</p></div>
-    </div>
-
-    <!-- ── SUBS ── -->
-    <div class="menu-panel" id="tab-subs">
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Cold Subs dressed with Mayo, House Oil, Lettuce, Tomato, Onion, and American, Provolone or Swiss Cheese &nbsp;|&nbsp; Add-ons: Banana Peppers, Pickles, Black Olives, Cucumbers, or Green Peppers &nbsp;|&nbsp; Add Bacon: Sm +$2.75 · Lg +$3.50</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Ham, Turkey, or Salami</span><span class="menu-entry-price">Sm $7.50 · Lg $9.50</span></div><p class="menu-entry-desc">Classic cold sub with your choice of meat.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mixed (Ham &amp; Salami)</span><span class="menu-entry-price">Sm $7.50 · Lg $9.50</span></div><p class="menu-entry-desc">A hearty combination of ham and salami.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">BLT</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div><p class="menu-entry-desc">Crispy bacon, fresh lettuce, and ripe tomato.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Veggie</span><span class="menu-entry-price">Sm $7.00 · Lg $9.00</span></div><p class="menu-entry-desc">Fresh vegetables piled high on a sub roll.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Tender Sub</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div><p class="menu-entry-desc">Crispy chicken tenders on a sub roll with your choice of toppings.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Tender Sub</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div><p class="menu-entry-desc">Buffalo-sauced chicken tenders on a sub roll.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Philly Steak &amp; Mozzarella</span><span class="menu-entry-price">Sm $9.00 · Lg $11.50</span><span class="menu-entry-tag">⭐ Fan Favorite</span></div><p class="menu-entry-desc">Grilled Philly steak with Peppers, Mushrooms &amp; Onions.</p></div></div>
-    </div>
-
-    <!-- ── BURGERS ── -->
-    <div class="menu-panel" id="tab-burgers">
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">1/4 lb Burgers on a Toasted Bun with Mayonnaise, Lettuce, Tomato &amp; Onions &nbsp;|&nbsp; Add Bacon +$2.25</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/4 lb Cheeseburger</span><span class="menu-entry-price">$4.75</span></div><p class="menu-entry-desc">Classic quarter-pound burger with melted cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/4 lb Double Cheeseburger</span><span class="menu-entry-price">$7.50</span></div><p class="menu-entry-desc">Two patties, double the cheese, double the flavor.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/4 lb Swiss Mushroom Cheeseburger</span><span class="menu-entry-price">$5.75</span></div><p class="menu-entry-desc">Topped with sautéed mushrooms and melted Swiss cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/4 lb Mexican Cheeseburger</span><span class="menu-entry-price">$5.75</span></div><p class="menu-entry-desc">Spiced up with our homemade Mexican sauce and melted cheese.</p></div></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">1/3 lb Black Angus Cheeseburgers — Grass Fed &amp; Locally Raised from Indian Ladder Farms. On a Toasted Bun with Mayonnaise, Lettuce, Tomato &amp; Onions</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/3 lb Angus Cheeseburger</span><span class="menu-entry-price">$8.25</span><span class="menu-entry-tag">⭐ Best Seller</span></div><p class="menu-entry-desc">Our signature grass-fed Angus beef burger with melted cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/3 lb Angus Bacon Cheeseburger</span><span class="menu-entry-price">$10.50</span><span class="menu-entry-tag">⭐ Fan Favorite</span></div><p class="menu-entry-desc">Angus beef topped with crispy bacon and melted cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/3 lb Angus Swiss Mushroom</span><span class="menu-entry-price">$9.25</span></div><p class="menu-entry-desc">Angus beef with sautéed mushrooms and melted Swiss.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">1/3 lb Angus Mexican Cheeseburger</span><span class="menu-entry-price">$9.25</span></div><p class="menu-entry-desc">Angus beef with homemade Mexican sauce and melted cheese.</p></div></div>
-    </div>
-
-    <!-- ── CHICKEN ── -->
-    <div class="menu-panel" id="tab-chicken">
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Chicken Sandwiches served on a Grilled Hard Roll</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Deluxe</span><span class="menu-entry-price">$7.50</span></div><p class="menu-entry-desc">Grilled chicken with Melted Cheese, Mayonnaise, Lettuce, Tomato &amp; Onion.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Deluxe with Bacon</span><span class="menu-entry-price">$9.50</span></div><p class="menu-entry-desc">Grilled chicken with bacon, Melted Cheese, Mayonnaise, Lettuce, Tomato &amp; Onion.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Chicken with Ranch, Lettuce &amp; Tomato.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mexican Chicken</span><span class="menu-entry-price">$8.50</span></div><p class="menu-entry-desc">Grilled Chicken topped with our Homemade Mexican Sauce and Melted Cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Swiss Mushroom Chicken</span><span class="menu-entry-price">$8.50</span></div><p class="menu-entry-desc">Grilled Chicken with Grilled Mushrooms and Melted Swiss Cheese, Mayonnaise, Lettuce, Tomato &amp; Onions.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Crispy Tangy Carolina</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Crispy Chicken with Tangy Carolina Sauce, Lettuce &amp; Dill Pickles.</p></div></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Quesadillas served with Salsa and Sour Cream &nbsp;|&nbsp; Add Fresh Tomatoes, Peppers or Onions +$.50 each</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cheese Quesadilla</span><span class="menu-entry-price">$6.75</span></div><p class="menu-entry-desc">Melted cheese in a crispy tortilla, served with salsa and sour cream.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Chicken Quesadilla</span><span class="menu-entry-price">$9.00</span></div><p class="menu-entry-desc">Grilled chicken and cheese in a crispy tortilla.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Grilled Chicken Quesadilla</span><span class="menu-entry-price">$9.50</span></div><p class="menu-entry-desc">Buffalo chicken and cheese, served with salsa and sour cream.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Philly Steak Quesadilla</span><span class="menu-entry-price">$9.75</span></div><p class="menu-entry-desc">Philly steak and cheese in a crispy tortilla.</p></div></div>
-    </div>
-
-    <!-- ── SALADS & WRAPS ── -->
-    <div class="menu-panel" id="tab-salads">
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Salads: Regular $12.50 · Large $16.50 &nbsp;|&nbsp; Ask server for choice of dressings. Extra Dressing $1.50</p></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Antipasto Salad</span><span class="menu-entry-price">Reg $12.50 · Lg $16.50</span></div><p class="menu-entry-desc">Iceberg Lettuce with Tomatoes, Cucumbers, Ham, Turkey, Salami, Pepperoni, American Cheese, Cheddar Cheese &amp; Onions.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chef Salad</span><span class="menu-entry-price">Reg $12.50 · Lg $16.50</span></div><p class="menu-entry-desc">Iceberg Lettuce with Tomatoes, Cucumbers, Ham, Turkey, Swiss Cheese &amp; Provolone Cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Chicken Salad</span><span class="menu-entry-price">Reg $12.50 · Lg $16.50</span></div><p class="menu-entry-desc">Iceberg lettuce with Tomatoes, Cucumbers, Black Olives, Mozzarella &amp; Grilled Chicken.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken Salad</span><span class="menu-entry-price">Reg $12.50 · Lg $16.50</span></div><p class="menu-entry-desc">Iceberg Lettuce with Tomatoes, Cucumbers, Monterey Jack &amp; Cheddar cheese and Crispy Buffalo Chicken.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Caesar Salad</span><span class="menu-entry-price">Reg $12.50 · Lg $16.50</span></div><p class="menu-entry-desc">Grilled Chicken on Romaine Lettuce with Croutons tossed in Caesar Dressing.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Side Toss Salad</span><span class="menu-entry-price">$4.25</span></div><p class="menu-entry-desc">Iceberg Lettuce, Tomatoes, Cucumbers &amp; Onions.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Bacon Ranch Wrap</span><span class="menu-entry-price">$9.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Chicken with Bacon, Ranch, Lettuce, Tomatoes, Monterey Jack &amp; Cheddar Cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken Wrap</span><span class="menu-entry-price">$9.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Buffalo Chicken with Ranch, Lettuce, Tomatoes, Monterey Jack &amp; Cheddar Cheese.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Philly Wrap</span><span class="menu-entry-price">$9.50</span></div><p class="menu-entry-desc">Grilled Philly Steak with mushrooms, peppers, onions &amp; mozzarella cheese, wrapped with Mayonnaise, Lettuce &amp; Tomatoes.</p></div></div>
-      <div class="menu-entry" style="grid-column:1/-1;background:rgba(184,146,74,0.06);border-left:3px solid var(--gold);padding:1rem 1.8rem;"><p class="menu-entry-desc" style="color:var(--navy);font-size:0.8rem;">Sandwiches: Grilled Cheese $5.50 · with Tomato $5.75 · with Ham or Bacon $6.50 · BLT $6.50 · Cold Ham or Turkey $5.75</p></div>
-    </div>
-
-    <!-- ── DRINKS ── -->
-    <div class="menu-panel" id="tab-drinks">
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Fountain Soda</span><span class="menu-entry-price">$2.50</span></div><p class="menu-entry-desc">Ginger Ale, Root Beer, Cola, Diet Cola, Lemon Lime, or Mountain Dew. Free Refills!</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Fresh Brewed Iced Tea</span><span class="menu-entry-price">$2.50</span></div><p class="menu-entry-desc">House-brewed iced tea, served tall. Free Refills!</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Beer</span><span class="menu-entry-price">Priced as marked</span></div><p class="menu-entry-desc">Now serving beer — ask your server for today's selection. Must be 21+.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Wine &amp; Wine Slushies</span><span class="menu-entry-price">Priced as marked</span><span class="menu-entry-tag">✨ New!</span></div><p class="menu-entry-desc">Now serving wine and refreshing wine slushies. Must be 21+.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Coffee or Hot Tea</span><span class="menu-entry-price">$2.25</span></div><p class="menu-entry-desc">Fresh-brewed hot coffee or your choice of hot tea. Free Refills!</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Hot Chocolate</span><span class="menu-entry-price">$3.00</span></div><p class="menu-entry-desc">Rich, creamy hot chocolate.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chocolate Milk</span><span class="menu-entry-price">$2.75</span></div><p class="menu-entry-desc"></p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Milk</span><span class="menu-entry-price">$2.50</span></div><p class="menu-entry-desc"></p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Orange Juice</span><span class="menu-entry-price">$2.75</span></div><p class="menu-entry-desc">Fresh-squeezed style OJ.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mimosa</span><span class="menu-entry-price">$7.00</span></div><p class="menu-entry-desc">A classic brunch staple. Must be 21+.</p></div></div>
-      <div class="menu-entry"><div class="menu-entry-dot"></div><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cooler Drinks</span><span class="menu-entry-price">Priced as marked</span></div><p class="menu-entry-desc">Wide selection of bottled and canned drinks from the cooler.</p></div></div>
+    <!-- Menu panels — built dynamically from Firebase categories + items -->
+    <div id="menu-panels-container">
+      <!-- Populated by loadMenu() — falls back to static content if Firebase is empty -->
     </div>
 
     <div class="specials-banner reveal">
@@ -1818,7 +1708,7 @@ footer {
         <h2 class="heading heading-light" style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:0">What people can't stop ordering</h2>
       </div>
     </div>
-    <div class="fav-scroll reveal">
+    <div class="fav-scroll reveal" id="fav-scroll">
       <div class="fav-pill"><span class="star">★</span> 1/3 lb Angus Bacon Cheeseburger</div>
       <div class="fav-pill"><span class="star">★</span> Chicken Bacon Ranch Wrap</div>
       <div class="fav-pill"><span class="star">★</span> Boneless Wings (10)</div>
@@ -2059,61 +1949,103 @@ function formatPrice(price) {
 }
 
 // ── MENU ──────────────────────────────────────────────────────────────────────
+
+// Load categories from Firebase
+async function loadCategories() {
+  try {
+    const snap = await getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'categories'));
+    return snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));
+  } catch(e) {
+    console.warn('Categories load failed.', e.message);
+    return [];
+  }
+}
+
+// Switch active menu tab
+function switchMenuTab(tabId) {
+  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+  const tab = document.querySelector(`.menu-tab[data-tab="${tabId}"]`);
+  const panel = document.getElementById('tab-' + tabId);
+  if (tab) tab.classList.add('active');
+  if (panel) panel.classList.add('active');
+}
+
 async function loadMenu() {
   try {
-    const snap = await getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'menu'));
-    const items = snap.docs
+    // 1. Load categories and menu items in parallel
+    const [categories, menuSnap] = await Promise.all([
+      loadCategories(),
+      getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'menu'))
+    ]);
+
+    const items = menuSnap.docs
       .map(d => ({ id: d.id, ...d.data() }))
       .filter(i => i.available !== false)
       .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
 
-    if (!items.length) return; // keep static HTML if no data
+    // Populate Guest Favorites from featured items
+    loadFavorites(items);
 
-    // Map of category slug → items
-    const catMap = {};
-    items.forEach(item => {
-      const cat = (item.category || 'other').toLowerCase().trim();
-      if (!catMap[cat]) catMap[cat] = [];
-      catMap[cat].push(item);
-    });
+    // If no categories or items in Firebase, leave static content as-is
+    if (!categories.length && !items.length) return;
 
-    // Tab IDs on the page
-    const tabIds = ['breakfast','apps','subs','burgers','chicken','salads','drinks'];
+    // If no categories but has items — group by category name automatically
+    const cats = categories.length
+      ? categories
+      : [...new Set(items.map(i => i.category).filter(Boolean))]
+          .map((name, i) => ({ id: name.toLowerCase().replace(/\s+/g,'-'), name, sortOrder: i }));
 
-    tabIds.forEach(tabId => {
-      const panel = document.getElementById('tab-' + tabId);
-      if (!panel) return;
+    if (!cats.length) return;
 
-      // Find matching items — try exact match first, then partial
-      const catItems = catMap[tabId] || catMap[Object.keys(catMap).find(k => k.includes(tabId))] || [];
-      if (!catItems.length) return; // keep static HTML for this tab
+    // 2. Build tabs
+    const tabsContainer = document.getElementById('menuTabs');
+    if (tabsContainer) {
+      tabsContainer.innerHTML = cats.map((cat, idx) => `
+        <button class="menu-tab ${idx === 0 ? 'active' : ''}"
+                data-tab="${esc(cat.id)}"
+                onclick="switchMenuTab('${esc(cat.id)}')">
+          ${esc(cat.name)}
+        </button>
+      `).join('');
+    }
 
-      // Preserve any static note rows (grid-column:1/-1 info bars)
-      const noteRows = Array.from(panel.querySelectorAll('.menu-entry[style*="grid-column"]'))
-        .map(el => el.outerHTML);
-
-      // Build new item HTML
-      const itemsHTML = catItems.map(item => {
-        const featuredTag = item.featured
-          ? `<span class="menu-entry-tag">⭐ Fan Favorite</span>`
-          : '';
-        const priceDisplay = formatPrice(item.price);
-        return `<div class="menu-entry">
-          <div class="menu-entry-dot"></div>
-          <div class="menu-entry-body">
-            <div class="menu-entry-top">
-              <span class="menu-entry-name">${esc(item.name)}</span>
-              <span class="menu-entry-price">${esc(priceDisplay)}</span>
+    // 3. Build panels
+    const panelsContainer = document.getElementById('menu-panels-container');
+    if (panelsContainer) {
+      panelsContainer.innerHTML = cats.map((cat, idx) => {
+        const catItems = items.filter(i =>
+          (i.category || '').toLowerCase().trim() === (cat.name || '').toLowerCase().trim()
+        );
+        const itemsHTML = catItems.map(item => {
+          const priceDisplay = formatPrice(item.price);
+          const featuredTag = item.featured
+            ? `<span class="menu-entry-tag">⭐ Fan Favorite</span>` : '';
+          return `<div class="menu-entry">
+            <div class="menu-entry-dot"></div>
+            <div class="menu-entry-body">
+              <div class="menu-entry-top">
+                <span class="menu-entry-name">${esc(item.name)}</span>
+                <span class="menu-entry-price">${esc(priceDisplay)}</span>
+              </div>
+              ${item.description ? `<p class="menu-entry-desc">${esc(item.description)}</p>` : ''}
+              ${featuredTag}
             </div>
-            ${item.description ? `<p class="menu-entry-desc">${esc(item.description)}</p>` : ''}
-            ${featuredTag}
-          </div>
+          </div>`;
+        }).join('');
+
+        const emptyMsg = catItems.length === 0
+          ? `<div class="menu-entry" style="grid-column:1/-1;padding:1.5rem 1.8rem;opacity:0.5;">
+               <p class="menu-entry-desc">No items in this category yet.</p>
+             </div>` : '';
+
+        return `<div class="menu-panel ${idx === 0 ? 'active' : ''}" id="tab-${esc(cat.id)}">
+          ${itemsHTML || emptyMsg}
         </div>`;
       }).join('');
-
-      // Rebuild panel: first note row + items + remaining note rows
-      panel.innerHTML = (noteRows[0] || '') + itemsHTML + (noteRows.slice(1).join('') || '');
-    });
+    }
 
   } catch(e) {
     console.warn('Menu load failed, using static content.', e.message);
@@ -2273,6 +2205,20 @@ async function loadContact() {
   }
 }
 
+// ── FAVORITES ─────────────────────────────────────────────────────────────────
+function loadFavorites(items) {
+  // items is the full menu array already fetched by loadMenu()
+  const featured = items.filter(i => i.featured === true);
+  if (!featured.length) return; // keep static hardcoded pills
+
+  const container = document.getElementById('fav-scroll');
+  if (!container) return;
+
+  container.innerHTML = featured.map(item =>
+    `<div class="fav-pill"><span class="star">★</span> ${esc(item.name)}</div>`
+  ).join('');
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 Promise.allSettled([
   loadMenu(),
@@ -2341,13 +2287,15 @@ if (hamburger && navLinks) {
   });
 }
 
-// Menu tab switching
+// Menu tab switching — handled by switchMenuTab() in the Firebase module
+// This fallback handles any statically rendered tabs if Firebase is not loaded
 document.querySelectorAll('.menu-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
     this.classList.add('active');
-    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+    const panel = document.getElementById('tab-' + this.dataset.tab);
+    if (panel) panel.classList.add('active');
   });
 });
 

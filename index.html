@@ -1963,8 +1963,8 @@ async function loadCategories() {
   }
 }
 
-// Switch active menu tab
-function switchMenuTab(tabId) {
+// Switch active menu tab — exposed globally so inline onclick works from module
+window.switchMenuTab = function(tabId) {
   document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
   const tab = document.querySelector(`.menu-tab[data-tab="${tabId}"]`);
@@ -2287,16 +2287,22 @@ if (hamburger && navLinks) {
   });
 }
 
-// Menu tab switching — handled by switchMenuTab() in the Firebase module
-// This fallback handles any statically rendered tabs if Firebase is not loaded
-document.querySelectorAll('.menu-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
+// Menu tab switching — event delegation so it works on dynamically built tabs
+document.addEventListener('click', function(e) {
+  const tab = e.target.closest('.menu-tab');
+  if (!tab) return;
+  const tabId = tab.dataset.tab;
+  if (!tabId) return;
+  // Use global switchMenuTab if available (set by Firebase module)
+  if (typeof window.switchMenuTab === 'function') {
+    window.switchMenuTab(tabId);
+  } else {
     document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
-    this.classList.add('active');
-    const panel = document.getElementById('tab-' + this.dataset.tab);
+    tab.classList.add('active');
+    const panel = document.getElementById('tab-' + tabId);
     if (panel) panel.classList.add('active');
-  });
+  }
 });
 
 // Smooth scroll for all anchor links (including Hours & Directions button)

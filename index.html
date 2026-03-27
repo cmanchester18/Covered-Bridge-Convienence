@@ -45,7 +45,7 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
 <style>
 /* ════════════════════════════════════════
@@ -69,7 +69,6 @@
   --text-muted: rgba(255,255,255,0.55);
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-script:  'Pinyon Script', cursive;
   --font-body:    'Outfit', sans-serif;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -135,11 +134,13 @@ body::before {
   text-decoration: none;
 }
 .nav-wordmark .wm-top {
-  font-family: var(--font-script);
-  font-size: 1.6rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.2rem;
   color: var(--gold-lt);
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 .nav-wordmark .wm-bottom {
   font-family: var(--font-body);
@@ -258,12 +259,14 @@ body::before {
   text-shadow: 0 2px 16px rgba(0,0,0,0.65), 0 4px 32px rgba(0,0,0,0.5);
 }
 .hero-title .script-word {
-  font-family: var(--font-script);
-  font-size: 1.15em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.0em;
   color: var(--gold-pale);
   display: block;
-  line-height: 1;
-  margin: -0.1em 0;
+  line-height: 1.15;
+  margin: 0.05em 0;
   text-shadow: 0 2px 16px rgba(0,0,0,0.65), 0 4px 32px rgba(0,0,0,0.5);
 }
 
@@ -945,10 +948,12 @@ body::before {
   position: relative; z-index: 1;
 }
 .cta-script {
-  font-family: var(--font-script);
-  font-size: clamp(3rem, 6vw, 5rem);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2.8rem, 5.5vw, 4.8rem);
   color: var(--gold-pale);
-  line-height: 1;
+  line-height: 1.1;
   margin-bottom: 0.5rem;
   opacity: 0.9;
 }
@@ -1068,9 +1073,14 @@ footer {
   gap: 4rem; margin-bottom: 3rem;
 }
 .footer-brand .script {
-  font-family: var(--font-script);
-  font-size: 2.2rem; color: var(--gold-lt);
-  line-height: 1; margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.7rem;
+  color: var(--gold-lt);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.5rem;
 }
 .footer-brand p {
   font-size: 0.8rem; color: rgba(255,255,255,0.4);

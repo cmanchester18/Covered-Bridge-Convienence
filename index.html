@@ -1733,13 +1733,25 @@ footer {
     </div>
 
     <!-- Tab Navigation — built dynamically from Firebase categories -->
-    <div class="menu-tabs reveal" id="menuTabs">
+    <div class="menu-tabs" id="menuTabs">
       <!-- Populated by loadMenu() -->
     </div>
 
     <!-- Menu panels — built dynamically from Firebase categories + items -->
     <div id="menu-panels-container">
-      <!-- Populated by loadMenu() — falls back to static content if Firebase is empty -->
+      <!-- Loading placeholder — immediately visible, replaced by Firebase data -->
+      <div id="menu-loading" style="
+        padding: 2.5rem 1.8rem;
+        text-align: center;
+        border: 1px solid rgba(21,34,56,0.08);
+        border-radius: 8px;
+        color: #7a8fa8;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+      ">
+        <div style="font-size:1.4rem;margin-bottom:0.6rem;opacity:0.4;">🍽️</div>
+        Loading menu&hellip;
+      </div>
     </div>
 
     <div class="specials-banner reveal">
@@ -2055,7 +2067,11 @@ async function loadMenu() {
 
     if (!cats.length) return;
 
-    // 2. Build tabs
+    // 2. Remove loading placeholder now that we have real data
+    const loadingEl = document.getElementById('menu-loading');
+    if (loadingEl) loadingEl.remove();
+
+    // 3. Build tabs
     const tabsContainer = document.getElementById('menuTabs');
     if (tabsContainer) {
       tabsContainer.innerHTML = cats.map((cat, idx) => `
@@ -2104,6 +2120,16 @@ async function loadMenu() {
 
   } catch(e) {
     console.warn('Menu load failed, using static content.', e.message);
+    // Replace loading state with a friendly call-to-action fallback
+    const loadingFallback = document.getElementById('menu-loading');
+    if (loadingFallback) {
+      loadingFallback.innerHTML = `
+        <div style="font-size:1.4rem;margin-bottom:0.6rem;opacity:0.4;">📞</div>
+        <strong style="color:var(--navy);display:block;margin-bottom:0.4rem;">Menu temporarily unavailable online.</strong>
+        Call us at <a href="tel:3154293434" style="color:var(--gold);text-decoration:none;font-weight:600;">(315) 429-3434</a> or
+        check our <a href="https://www.facebook.com/thecbc3434/" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600;">Facebook page</a> for today's full menu.
+      `;
+    }
   }
 }
 

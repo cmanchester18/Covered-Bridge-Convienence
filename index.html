@@ -666,7 +666,6 @@ body::before {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
-.menu-tab .tab-icon { font-size: 1rem; }
 .menu-tab:hover { color: var(--navy); }
 .menu-tab.active {
   color: var(--navy);
@@ -1142,6 +1141,38 @@ footer {
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: none; }
+}
+
+/* ── Menu Category Headers ── */
+.menu-category-header {
+  padding: 0.65rem 1.6rem 0.45rem;
+  background: rgba(21,34,56,0.04);
+  border-bottom: 1px solid rgba(21,34,56,0.07);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.menu-category-header::before {
+  content: '';
+  display: inline-block;
+  width: 18px; height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+.menu-section-note {
+  padding: 0.6rem 1.6rem;
+  font-size: 0.74rem;
+  color: #7a8fa8;
+  font-weight: 300;
+  border-bottom: 1px solid rgba(21,34,56,0.07);
+  background: rgba(21,34,56,0.02);
+  line-height: 1.55;
+  font-style: italic;
 }
 
 /* ════════════════════════════════════════
@@ -1732,26 +1763,181 @@ footer {
       </p>
     </div>
 
-    <!-- Tab Navigation — built dynamically from Firebase categories -->
+    <!-- Tab Navigation — static -->
     <div class="menu-tabs" id="menuTabs">
-      <!-- Populated by loadMenu() -->
+      <button class="menu-tab active" data-tab="breakfast" onclick="switchMenuTab('breakfast')">Breakfast</button>
+      <button class="menu-tab" data-tab="appetizers" onclick="switchMenuTab('appetizers')">Appetizers</button>
+      <button class="menu-tab" data-tab="quesadillas" onclick="switchMenuTab('quesadillas')">Quesadillas</button>
+      <button class="menu-tab" data-tab="salads" onclick="switchMenuTab('salads')">Salads</button>
+      <button class="menu-tab" data-tab="wraps" onclick="switchMenuTab('wraps')">Wraps</button>
+      <button class="menu-tab" data-tab="sandwiches" onclick="switchMenuTab('sandwiches')">Sandwiches</button>
+      <button class="menu-tab" data-tab="subs" onclick="switchMenuTab('subs')">Subs</button>
+      <button class="menu-tab" data-tab="burgers" onclick="switchMenuTab('burgers')">Burgers</button>
+      <button class="menu-tab" data-tab="chicken" onclick="switchMenuTab('chicken')">Chicken</button>
+      <button class="menu-tab" data-tab="drinks" onclick="switchMenuTab('drinks')">Drinks</button>
     </div>
 
-    <!-- Menu panels — built dynamically from Firebase categories + items -->
     <div id="menu-panels-container">
-      <!-- Loading placeholder — immediately visible, replaced by Firebase data -->
-      <div id="menu-loading" style="
-        padding: 2.5rem 1.8rem;
-        text-align: center;
-        border: 1px solid rgba(21,34,56,0.08);
-        border-radius: 8px;
-        color: #7a8fa8;
-        font-size: 0.85rem;
-        letter-spacing: 0.04em;
-      ">
-        <div style="font-size:1.4rem;margin-bottom:0.6rem;opacity:0.4;">🍽️</div>
-        Loading menu&hellip;
+
+      <!-- ─── BREAKFAST ─── -->
+      <div class="menu-panel active" id="tab-breakfast">
+        <div class="menu-category-header">Eggs — Served until 11AM</div>
+        <div class="menu-section-note">Served with Toasted White, Wheat, Rye, or Italian</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Eggs</span><span class="menu-entry-price">$4.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Eggs with Meat</span><span class="menu-entry-price">$6.75</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Eggs</span><span class="menu-entry-price">$5.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Eggs with Meat</span><span class="menu-entry-price">$7.75</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+
+        <div class="menu-category-header">Three Egg Omelette</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Egg Omelette</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Served with Toasted White, Wheat, Rye, or Italian. Choice of fillings +$0.60 each: Ham, Onions, Peppers, Tomato, Broccoli, Sausage, Bacon, Mushroom. Choice of Cheese: American, Swiss, or Provolone.</p></div></div>
+
+        <div class="menu-category-header">Breakfast Sandwiches</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Meat, Egg &amp; Cheese</span><span class="menu-entry-price">$4.75</span></div><p class="menu-entry-desc">Choice of Meat: Bacon, Ham, or Sausage &middot; Choice of Cheese: American, Swiss, or Provolone &middot; On a Hard Roll, English Muffin, Bagel, or Toast &middot; Extra Meat +$1.50 &middot; Extra Egg +$1.50</p></div></div>
+
+        <div class="menu-category-header">French Toast</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Slice of French Toast</span><span class="menu-entry-price">$4.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Slice with Meat</span><span class="menu-entry-price">$6.75</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Slices of French Toast</span><span class="menu-entry-price">$5.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Slices with Meat</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Slices of French Toast</span><span class="menu-entry-price">$7.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Three Slices with Meat</span><span class="menu-entry-price">$9.25</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+
+        <div class="menu-category-header">Pancakes</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Pancake</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">One Pancake with Meat</span><span class="menu-entry-price">$8.25</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Pancakes</span><span class="menu-entry-price">$8.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Two Pancakes with Meat</span><span class="menu-entry-price">$10.50</span></div><p class="menu-entry-desc">Choice of Sausage Patties, Bacon, or Ham</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Add Chocolate Chips</span><span class="menu-entry-price">+$1.50</span></div></div></div>
+
+        <div class="menu-category-header">Sides &amp; Extras</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Home Fries</span><span class="menu-entry-price">$3.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Home Fries with Onions &amp; Peppers</span><span class="menu-entry-price">$4.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Bacon, Sausage, or Ham</span><span class="menu-entry-price">$3.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Hash</span><span class="menu-entry-price">$3.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Toast</span><span class="menu-entry-price">$1.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Bagel, Hard Roll, or English Muffin</span><span class="menu-entry-price">$2.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cream Cheese</span><span class="menu-entry-price">$1.00</span></div></div></div>
+
+        <div class="menu-category-header">Drinks</div>
+        <div class="menu-section-note">Free Refills on Fountain Soda, Coffee, and Iced Tea</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Coffee or Hot Tea</span><span class="menu-entry-price">$2.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Hot Chocolate</span><span class="menu-entry-price">$3.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Milk</span><span class="menu-entry-price">$2.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chocolate Milk</span><span class="menu-entry-price">$2.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Orange Juice</span><span class="menu-entry-price">$2.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Fountain Soda</span><span class="menu-entry-price">$2.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Iced Tea</span><span class="menu-entry-price">$2.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mimosas</span><span class="menu-entry-price">$7.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cooler Drinks</span><span class="menu-entry-price">Priced as Marked</span></div><p class="menu-entry-desc">Wide selection of bottled &amp; canned beverages</p></div></div>
       </div>
+
+      <!-- ─── APPETIZERS ─── -->
+      <div class="menu-panel" id="tab-appetizers">
+        <div class="menu-section-note">Dipping Sauces included: BBQ, Ranch, Honey Mustard, Buffalo (Mild, Medium, Hot), Blue Cheese, Sour Cream, Tiger Sauce, Marinara &middot; Extra Sauce +$0.50</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Tenders (3)</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mozzarella Sticks (5)</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Pizza Logs (5)</span><span class="menu-entry-price">$8.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Breaded Mushrooms</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Boneless Wings (10)</span><span class="menu-entry-price">$9.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Onion Petals</span><span class="menu-entry-price">$5.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Breaded Cauliflower</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-category-header">French Fries</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">French Fries — Small</span><span class="menu-entry-price">$3.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">French Fries — Regular</span><span class="menu-entry-price">$4.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">French Fries — Large</span><span class="menu-entry-price">$6.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Curly or Sweet Potato Fries — Small</span><span class="menu-entry-price">$3.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Curly or Sweet Potato Fries — Regular</span><span class="menu-entry-price">$4.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Curly or Sweet Potato Fries — Large</span><span class="menu-entry-price">$7.00</span></div></div></div>
+      </div>
+
+      <!-- ─── QUESADILLAS ─── -->
+      <div class="menu-panel" id="tab-quesadillas">
+        <div class="menu-section-note">Served with Salsa and Sour Cream &middot; Add Fresh Tomatoes, Peppers, or Onions +$0.50 each</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cheese Quesadilla</span><span class="menu-entry-price">$6.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Chicken Quesadilla</span><span class="menu-entry-price">$9.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Grilled Chicken Quesadilla</span><span class="menu-entry-price">$9.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Philly Steak Quesadilla</span><span class="menu-entry-price">$9.75</span></div></div></div>
+      </div>
+
+      <!-- ─── SALADS ─── -->
+      <div class="menu-panel" id="tab-salads">
+        <div class="menu-section-note">Regular $12.50 &middot; Large $16.50 &middot; Ask server for choice of dressings &middot; Extra dressing +$1.50</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Antipasto</span><span class="menu-entry-price">From $12.50</span></div><p class="menu-entry-desc">Iceberg lettuce topped with Tomatoes, Cucumbers, Ham, Turkey, Salami, Pepperoni, American Cheese, Cheddar Cheese, and Onions</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chef Salad</span><span class="menu-entry-price">From $12.50</span></div><p class="menu-entry-desc">Iceberg lettuce topped with Tomatoes, Cucumbers, Ham, Turkey, Swiss Cheese, and Provolone Cheese</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Chicken Salad</span><span class="menu-entry-price">From $12.50</span></div><p class="menu-entry-desc">Iceberg lettuce topped with Tomatoes, Cucumbers, Black Olives, Mozzarella, and Grilled Chicken</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken Salad</span><span class="menu-entry-price">From $12.50</span></div><p class="menu-entry-desc">Iceberg lettuce topped with Tomatoes, Cucumbers, Monterey Jack and Cheddar Cheese, and Crispy Buffalo Chicken</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Caesar Salad</span><span class="menu-entry-price">From $12.50</span></div><p class="menu-entry-desc">Grilled Chicken on a bed of Romaine Lettuce and Croutons tossed in Caesar Dressing</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Side Toss Salad</span><span class="menu-entry-price">$4.25</span></div><p class="menu-entry-desc">Iceberg Lettuce, Tomatoes, Cucumbers, and Onions</p></div></div>
+      </div>
+
+      <!-- ─── WRAPS ─── -->
+      <div class="menu-panel" id="tab-wraps">
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Bacon Ranch Wrap</span><span class="menu-entry-price">$9.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Chicken with Bacon, Ranch, Lettuce, Tomatoes, Monterey Jack and Cheddar Cheese</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken Wrap</span><span class="menu-entry-price">$9.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Buffalo Chicken with Ranch, Lettuce, Tomatoes, Monterey Jack and Cheddar Cheese</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Philly Wrap</span><span class="menu-entry-price">$9.50</span></div><p class="menu-entry-desc">Grilled Philly Steak with mushrooms, peppers, onions, and mozzarella cheese, wrapped up with Mayonnaise, Lettuce, and Tomatoes</p></div></div>
+      </div>
+
+      <!-- ─── SANDWICHES ─── -->
+      <div class="menu-panel" id="tab-sandwiches">
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Cheese</span><span class="menu-entry-price">$5.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Cheese with Tomato</span><span class="menu-entry-price">$5.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Grilled Cheese with Ham or Bacon</span><span class="menu-entry-price">$6.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">BLT</span><span class="menu-entry-price">$6.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cold Ham or Turkey</span><span class="menu-entry-price">$5.75</span></div></div></div>
+      </div>
+
+      <!-- ─── SUBS ─── -->
+      <div class="menu-panel" id="tab-subs">
+        <div class="menu-section-note">Cold Subs dressed with Mayo, House Oil, Lettuce, Tomato, Onion, and American, Provolone, or Swiss Cheese &middot; Additional toppings: Banana Peppers, Pickles, Black Olives, Cucumbers, or Green Peppers &middot; Add Bacon: Sm +$2.75 &middot; Lrg +$3.50</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Ham, Turkey, or Salami</span><span class="menu-entry-price">Sm $7.50 · Lg $9.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mixed (Ham &amp; Salami)</span><span class="menu-entry-price">Sm $7.50 · Lg $9.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">BLT</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Veggie</span><span class="menu-entry-price">Sm $7.00 · Lg $9.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Tender</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Tender</span><span class="menu-entry-price">Sm $8.50 · Lg $10.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Philly Steak &amp; Mozzarella</span><span class="menu-entry-price">Sm $9.00 · Lg $11.50</span></div><p class="menu-entry-desc">With Peppers, Mushrooms &amp; Onions</p></div></div>
+      </div>
+
+      <!-- ─── BURGERS ─── -->
+      <div class="menu-panel" id="tab-burgers">
+        <div class="menu-category-header">1/4 lb Burgers</div>
+        <div class="menu-section-note">On a Toasted Bun dressed with Mayonnaise, Lettuce, Tomato, and Onions &middot; Add Bacon +$2.25</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Cheeseburger</span><span class="menu-entry-price">$4.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Swiss Mushroom Cheeseburger</span><span class="menu-entry-price">$5.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Double Cheeseburger</span><span class="menu-entry-price">$7.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mexican Cheeseburger</span><span class="menu-entry-price">$5.75</span></div></div></div>
+        <div class="menu-category-header">1/3 lb Black Angus Cheeseburger</div>
+        <div class="menu-section-note">Grass Fed &amp; Locally Raised (Indian Ladder Farms) &middot; On a Toasted Bun dressed with Mayonnaise, Lettuce, Tomato, and Onions</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Black Angus Cheeseburger</span><span class="menu-entry-price">$8.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Black Angus Swiss Mushroom Cheeseburger</span><span class="menu-entry-price">$9.25</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Black Angus Bacon Cheeseburger</span><span class="menu-entry-price">$10.50</span></div><span class="menu-entry-tag">Fan Favorite</span></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Black Angus Mexican Cheeseburger</span><span class="menu-entry-price">$9.25</span></div></div></div>
+      </div>
+
+      <!-- ─── CHICKEN SANDWICHES ─── -->
+      <div class="menu-panel" id="tab-chicken">
+        <div class="menu-section-note">Served on a Grilled Hard Roll</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chicken Deluxe</span><span class="menu-entry-price">$7.50</span></div><p class="menu-entry-desc">Grilled Chicken with Melted Cheese, Mayonnaise, Lettuce, Tomato, and Onion &middot; With Bacon $9.50</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Buffalo Chicken</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Choice of Grilled or Crispy Chicken with Ranch, Lettuce, and Tomato</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mexican Chicken</span><span class="menu-entry-price">$8.50</span></div><p class="menu-entry-desc">Grilled Chicken topped with our Homemade Mexican Sauce and Melted Cheese</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Swiss Mushroom Chicken</span><span class="menu-entry-price">$8.50</span></div><p class="menu-entry-desc">Grilled Chicken with Grilled Mushrooms and Melted Swiss Cheese, dressed with Mayonnaise, Lettuce, Tomato, and Onions</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Crispy Tangy Carolina</span><span class="menu-entry-price">$8.00</span></div><p class="menu-entry-desc">Crispy Chicken with Tangy Carolina Sauce, Lettuce, and Dill Pickles</p><span class="menu-entry-tag">Fan Favorite</span></div></div>
+      </div>
+
+      <!-- ─── DRINKS ─── -->
+      <div class="menu-panel" id="tab-drinks">
+        <div class="menu-section-note">Now Serving Beer, Wine &amp; Wine Slushies! &middot; Free Refills on Fountain Soda, Coffee, and Iced Tea</div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Fountain Soda</span><span class="menu-entry-price">$2.50</span></div><p class="menu-entry-desc">Ginger Ale, Root Beer, Cola, Diet Cola, Lemon Lime, or Mountain Dew &middot; Free refills</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Coffee or Hot Tea</span><span class="menu-entry-price">$2.25</span></div><p class="menu-entry-desc">Free refills</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Fresh Brewed Iced Tea</span><span class="menu-entry-price">$2.50</span></div><p class="menu-entry-desc">Free refills</p></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Hot Chocolate</span><span class="menu-entry-price">$3.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Milk</span><span class="menu-entry-price">$2.50</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Chocolate Milk</span><span class="menu-entry-price">$2.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Orange Juice</span><span class="menu-entry-price">$2.75</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Mimosas</span><span class="menu-entry-price">$7.00</span></div></div></div>
+        <div class="menu-entry"><div class="menu-entry-body"><div class="menu-entry-top"><span class="menu-entry-name">Beer, Wine &amp; Wine Slushies</span><span class="menu-entry-price">Ask Us</span></div><p class="menu-entry-desc">Wide selection of cooler drinks also available, priced as marked</p></div></div>
+      </div>
+
     </div>
 
     <div class="specials-banner reveal">
@@ -1978,344 +2164,22 @@ footer {
   </div>
 </footer>
 
-<!-- ══════════════════════════════════
-     FIREBASE DATA INTEGRATION
-══════════════════════════════════ -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ─── FIREBASE CONFIG ──────────────────────────────────────────────────────────
-  const firebaseConfig = {
-    apiKey: "AIzaSyA_UK-BC03urd_2BsSaFkKqTkyJf56BnvI",
-    authDomain: "admin-dashboard-8e7db.firebaseapp.com",
-    projectId: "admin-dashboard-8e7db",
-    storageBucket: "admin-dashboard-8e7db.firebasestorage.app",
-    messagingSenderId: "557774603474",
-    appId: "1:557774603474:web:37aa31170915734e97d90b"
-};
-
-  // ─── RESTAURANT ID ────────────────────────────────────────────────────────────
-  // This is the Firebase Auth UID of the restaurant owner account.
-  // Find it in: Firebase Console → Authentication → Users → User UID
-  const RESTAURANT_ID = "w9JnnrrBdcg6ifvbzR3Y7dDX4zG2";
-  // ─────────────────────────────────────────────────────────────────────────────
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function formatPrice(price) {
-  if (!price && price !== 0) return '';
-  const n = parseFloat(price);
-  return isNaN(n) ? String(price) : '$' + n.toFixed(2);
-}
-
-// ── MENU ──────────────────────────────────────────────────────────────────────
-
-// Load categories from Firebase
-async function loadCategories() {
-  try {
-    const snap = await getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'categories'));
-    return snap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));
-  } catch(e) {
-    console.warn('Categories load failed.', e.message);
-    return [];
-  }
-}
-
-// Switch active menu tab — exposed globally so inline onclick works from module
-window.switchMenuTab = function(tabId) {
-  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
-  const tab = document.querySelector(`.menu-tab[data-tab="${tabId}"]`);
-  const panel = document.getElementById('tab-' + tabId);
-  if (tab) tab.classList.add('active');
-  if (panel) panel.classList.add('active');
-}
-
-async function loadMenu() {
-  try {
-    // 1. Load categories and menu items in parallel
-    const [categories, menuSnap] = await Promise.all([
-      loadCategories(),
-      getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'menu'))
-    ]);
-
-    const items = menuSnap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .filter(i => i.available !== false)
-      .sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
-
-    // Populate Guest Favorites from featured items
-    loadFavorites(items);
-
-    // If no categories or items in Firebase, leave static content as-is
-    if (!categories.length && !items.length) return;
-
-    // If no categories but has items — group by category name automatically
-    const cats = categories.length
-      ? categories
-      : [...new Set(items.map(i => i.category).filter(Boolean))]
-          .map((name, i) => ({ id: name.toLowerCase().replace(/\s+/g,'-'), name, sortOrder: i }));
-
-    if (!cats.length) return;
-
-    // 2. Remove loading placeholder now that we have real data
-    const loadingEl = document.getElementById('menu-loading');
-    if (loadingEl) loadingEl.remove();
-
-    // 3. Build tabs
-    const tabsContainer = document.getElementById('menuTabs');
-    if (tabsContainer) {
-      tabsContainer.innerHTML = cats.map((cat, idx) => `
-        <button class="menu-tab ${idx === 0 ? 'active' : ''}"
-                data-tab="${esc(cat.id)}"
-                onclick="switchMenuTab('${esc(cat.id)}')">
-          ${esc(cat.name)}
-        </button>
-      `).join('');
-    }
-
-    // 3. Build panels
-    const panelsContainer = document.getElementById('menu-panels-container');
-    if (panelsContainer) {
-      panelsContainer.innerHTML = cats.map((cat, idx) => {
-        const catItems = items.filter(i =>
-          (i.category || '').toLowerCase().trim() === (cat.name || '').toLowerCase().trim()
-        );
-        const itemsHTML = catItems.map(item => {
-          const priceDisplay = formatPrice(item.price);
-          const featuredTag = item.featured
-            ? `<span class="menu-entry-tag">⭐ Fan Favorite</span>` : '';
-          return `<div class="menu-entry">
-            <div class="menu-entry-dot"></div>
-            <div class="menu-entry-body">
-              <div class="menu-entry-top">
-                <span class="menu-entry-name">${esc(item.name)}</span>
-                <span class="menu-entry-price">${esc(priceDisplay)}</span>
-              </div>
-              ${item.description ? `<p class="menu-entry-desc">${esc(item.description)}</p>` : ''}
-              ${featuredTag}
-            </div>
-          </div>`;
-        }).join('');
-
-        const emptyMsg = catItems.length === 0
-          ? `<div class="menu-entry" style="grid-column:1/-1;padding:1.5rem 1.8rem;opacity:0.5;">
-               <p class="menu-entry-desc">No items in this category yet.</p>
-             </div>` : '';
-
-        return `<div class="menu-panel ${idx === 0 ? 'active' : ''}" id="tab-${esc(cat.id)}">
-          ${itemsHTML || emptyMsg}
-        </div>`;
-      }).join('');
-    }
-
-  } catch(e) {
-    console.warn('Menu load failed, using static content.', e.message);
-    // Replace loading state with a friendly call-to-action fallback
-    const loadingFallback = document.getElementById('menu-loading');
-    if (loadingFallback) {
-      loadingFallback.innerHTML = `
-        <div style="font-size:1.4rem;margin-bottom:0.6rem;opacity:0.4;">📞</div>
-        <strong style="color:var(--navy);display:block;margin-bottom:0.4rem;">Menu temporarily unavailable online.</strong>
-        Call us at <a href="tel:3154293434" style="color:var(--gold);text-decoration:none;font-weight:600;">(315) 429-3434</a> or
-        check our <a href="https://www.facebook.com/thecbc3434/" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600;">Facebook page</a> for today's full menu.
-      `;
-    }
-  }
-}
-
-// ── SPECIALS ─────────────────────────────────────────────────────────────────
-async function loadSpecials() {
-  try {
-    const snap = await getDocs(collection(db, 'restaurants', RESTAURANT_ID, 'specials'));
-    const specials = snap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .filter(s => s.active !== false);
-
-    if (!specials.length) return; // keep static banner
-
-    const banner = document.querySelector('.specials-banner');
-    if (!banner) return;
-
-    // Build a specials list inside the banner
-    const specialsHTML = specials.map(s => `
-      <div style="padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-start;gap:0.8rem;">
-        <span style="color:var(--gold);font-size:1rem;margin-top:2px;">★</span>
-        <div>
-          <strong style="color:#fff;font-family:var(--font-display);font-size:1rem;font-style:italic;">${esc(s.title)}</strong>
-          ${s.description ? `<p style="font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.2rem;">${esc(s.description)}</p>` : ''}
-          ${s.tag ? `<span style="font-size:0.68rem;color:var(--gold-lt);letter-spacing:0.08em;text-transform:uppercase;">${esc(s.tag)}</span>` : ''}
-          ${s.validUntil ? `<span style="font-size:0.68rem;color:rgba(255,255,255,0.35);margin-left:0.6rem;">${esc(s.validUntil)}</span>` : ''}
-        </div>
-      </div>`).join('');
-
-    banner.innerHTML = `
-      <div style="flex:1">
-        <h3>This Week's Specials</h3>
-        <div style="margin-top:0.8rem">${specialsHTML}</div>
-      </div>
-      <a href="https://www.facebook.com/thecbc3434/" target="_blank" class="btn-primary" style="white-space:nowrap;align-self:flex-start">See More on Facebook</a>
-    `;
-  } catch(e) {
-    console.warn('Specials load failed, using static content.', e.message);
-  }
-}
-
-// ── HOURS ─────────────────────────────────────────────────────────────────────
-async function loadHours() {
-  try {
-    const snap = await getDoc(doc(db, 'restaurants', RESTAURANT_ID, 'info', 'hours'));
-    if (!snap.exists()) return;
-    const data = snap.data();
-
-    const hoursTable = document.querySelector('.hours-table');
-    if (!hoursTable) return;
-
-    const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-
-    hoursTable.innerHTML = days.map(day => {
-      const d = data[day];
-      if (!d) return '';
-      const isClosed = d.closed === true;
-      const timeStr = isClosed
-        ? 'Closed'
-        : `${formatTime(d.open)} – ${formatTime(d.close)}`;
-      return `<tr class="${isClosed ? 'closed' : 'open'}">
-        <td>${day}</td>
-        <td>${timeStr}</td>
-      </tr>`;
-    }).join('');
-
-    // Also update the Open/Closed badge logic dynamically
-    updateOpenBadge(data);
-
-  } catch(e) {
-    console.warn('Hours load failed, using static content.', e.message);
-  }
-}
-
-function formatTime(t) {
-  if (!t) return '';
-  const [h, m] = t.split(':').map(Number);
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const hour = h % 12 || 12;
-  return `${hour}:${String(m).padStart(2,'0')} ${ampm}`;
-}
-
-function updateOpenBadge(hoursData) {
-  const badge = document.getElementById('open-badge');
-  if (!badge) return;
-  const now = new Date();
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const todayName = dayNames[now.getDay()];
-  const d = hoursData[todayName];
-  if (!d || d.closed) {
-    badge.className = 'is-closed';
-    badge.innerHTML = '<span class="badge-dot"></span>Closed';
-    return;
-  }
-  const [oh, om] = (d.open || '08:00').split(':').map(Number);
-  const [ch, cm] = (d.close || '20:00').split(':').map(Number);
-  const currentMins = now.getHours() * 60 + now.getMinutes();
-  const openMins = oh * 60 + om;
-  const closeMins = ch * 60 + cm;
-  if (currentMins >= openMins && currentMins < closeMins) {
-    badge.className = 'is-open';
-    badge.innerHTML = '<span class="badge-dot"></span>Open Now';
-  } else {
-    badge.className = 'is-closed';
-    badge.innerHTML = '<span class="badge-dot"></span>Closed';
-  }
-}
-
-// ── CONTACT ───────────────────────────────────────────────────────────────────
-async function loadContact() {
-  try {
-    const snap = await getDoc(doc(db, 'restaurants', RESTAURANT_ID, 'info', 'contact'));
-    if (!snap.exists()) return;
-    const d = snap.data();
-
-    // Phone links
-    if (d.phone) {
-      const rawPhone = d.phone.replace(/\D/g, '');
-      document.querySelectorAll('a[href^="tel:"]').forEach(a => {
-        a.href = 'tel:' + rawPhone;
-        // Only update text if it looks like a phone number
-        if (a.textContent.match(/\d{3}.*\d{4}/)) a.textContent = d.phone;
-      });
-    }
-
-    // Address in the visit section
-    if (d.address || d.city) {
-      document.querySelectorAll('.visit-details p').forEach(p => {
-        if (p.innerHTML.includes('State Route') || p.innerHTML.includes('Route 29')) {
-          p.innerHTML = `${esc(d.address || '')}<br>${esc(d.city || '')}${d.stateZip ? ', ' + esc(d.stateZip) : ''}`;
-        }
-      });
-    }
-
-    // Social links
-    if (d.facebook) {
-      document.querySelectorAll('a[href*="facebook.com"]').forEach(a => { a.href = d.facebook; });
-    }
-    if (d.instagram) {
-      document.querySelectorAll('a[href*="instagram.com"]').forEach(a => { a.href = d.instagram; });
-    }
-
-    // Footer address
-    if (d.address) {
-      document.querySelectorAll('.footer-col a[href="#"]').forEach(a => {
-        if (a.textContent.includes('State Rt') || a.textContent.includes('Salisbury')) {
-          if (a.textContent.includes('29') || a.textContent.includes('Route')) a.textContent = d.address;
-          else a.textContent = `${d.city || ''}${d.stateZip ? ', ' + d.stateZip : ''}`;
-        }
-      });
-    }
-
-  } catch(e) {
-    console.warn('Contact load failed, using static content.', e.message);
-  }
-}
-
-// ── FAVORITES ─────────────────────────────────────────────────────────────────
-function loadFavorites(items) {
-  // items is the full menu array already fetched by loadMenu()
-  const featured = items.filter(i => i.featured === true);
-  if (!featured.length) return; // keep static hardcoded pills
-
-  const container = document.getElementById('fav-scroll');
-  if (!container) return;
-
-  container.innerHTML = featured.map(item =>
-    `<div class="fav-pill"><span class="star">★</span> ${esc(item.name)}</div>`
-  ).join('');
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-Promise.allSettled([
-  loadMenu(),
-  loadSpecials(),
-  loadHours(),
-  loadContact()
-]).then(() => {
-  // Re-run scroll reveal observer after dynamic content
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
-});
-</script>
 
 <!-- ══════════════════════════════════
      JS: Nav scroll + Reveal
 ══════════════════════════════════ -->
 <script>
+// Tab switcher (used by menu tab onclick handlers)
+window.switchMenuTab = function(tabId) {
+  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+  const tab = document.querySelector('.menu-tab[data-tab="' + tabId + '"]');
+  const panel = document.getElementById('tab-' + tabId);
+  if (tab) tab.classList.add('active');
+  if (panel) panel.classList.add('active');
+};
+
 // Nav scroll state
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {

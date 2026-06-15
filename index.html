@@ -17,7 +17,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>The Covered Bridge Convenience | Salisbury Center, NY</title>
-<meta name="description" content="Family-owned restaurant, deli &amp; convenience store in Salisbury Center, NY. Breakfast served until 11AM, lunch &amp; dinner daily. Burgers, subs, wings, salads &amp; more. Open Wed–Sun 8AM–8PM on Route 29."/>
+<meta name="description" content="Family-owned restaurant, deli &amp; convenience store in Salisbury Center, NY. Breakfast served until 11AM, lunch &amp; dinner daily. Burgers, subs, wings, salads &amp; more. Open Tue–Sun on Route 29. Tue 10AM–6PM, Wed–Sun 8AM–8PM."/>
 <meta name="keywords" content="Covered Bridge Convenience, Salisbury Center NY, restaurant, diner, breakfast, lunch, dinner, burgers, subs, wings, Herkimer County, Route 29"/>
 <meta name="robots" content="index, follow"/>
 <link rel="canonical" href="https://coveredbridgeconvenience.com"/>
@@ -47,7 +47,7 @@
     "postalCode": "13454",
     "addressCountry": "US"
   },
-  "openingHours": ["We-Su 08:00-20:00"],
+  "openingHours": ["Tu 10:00-18:00", "We-Su 08:00-20:00"],
   "servesCuisine": ["American", "Diner", "Deli"],
   "priceRange": "$",
   "aggregateRating": {
@@ -2166,7 +2166,7 @@ footer {
         <h3>Hours</h3>
         <table class="hours-table">
           <tr class="closed"><td>Monday</td><td>Closed</td></tr>
-          <tr class="closed"><td>Tuesday</td><td>Closed</td></tr>
+          <tr class="open"><td>Tuesday</td><td>10:00 AM – 6:00 PM</td></tr>
           <tr class="open"><td>Wednesday</td><td>8:00 AM – 8:00 PM</td></tr>
           <tr class="open"><td>Thursday</td><td>8:00 AM – 8:00 PM</td></tr>
           <tr class="open"><td>Friday</td><td>8:00 AM – 8:00 PM</td></tr>
@@ -2300,9 +2300,10 @@ window.addEventListener('scroll', () => {
   const now = new Date();
   const day = now.getDay();
   const hour = now.getHours() + now.getMinutes() / 60;
-  const openDays = [0, 3, 4, 5, 6];
+  const openDays = [0, 2, 3, 4, 5, 6];
   const isOpenDay = openDays.includes(day);
-  const isOpenHour = hour >= 8 && hour < 20;
+  const isTuesday = day === 2;
+  const isOpenHour = isTuesday ? (hour >= 10 && hour < 18) : (hour >= 8 && hour < 20);
   if (isOpenDay && isOpenHour) {
     badge.className = 'is-open';
     badge.innerHTML = '<span class="badge-dot"></span>Open Now';
